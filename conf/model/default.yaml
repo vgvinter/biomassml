@@ -1,0 +1,9 @@
+_target_: src.biomassml.models.fcnn.FCNN
+
+dropout_p:  0.1
+initialization:  kaiming
+activation: ReLU
+batch_norm:  true
+dropconnect: false
+output_dim: 1
+layers: 264-264
