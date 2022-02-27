@@ -7,9 +7,8 @@ from .utils import as_tt
 
 
 class SupervisedDataset(Dataset):
-    def __init__(self, dataframe: pd.DataFrame, feature_names: List[str], label_names: List[str]):
-        self.df = pd.read_csv(dataframe)
-        self.df.dropna(subset=feature_names+label_names, inplace=True)
+    def __init__(self, df: pd.DataFrame, feature_names: List[str], label_names: List[str]):
+        self.df = df.dropna(subset=feature_names+label_names)
         self.label_names = label_names
         self.feature_names = feature_names
 

@@ -5,15 +5,15 @@ defaults:
   - _self_
   - trainer: default.yaml
   - model: default.yaml
-  - data: core.yaml
+  - data: default.yaml
 
 seed: 1234
 
-project_name: biomassml
+project_name: mpml
 entity: kjappelbaum
 log_model: false
 
 swa: false
 tags: 
-patience: 10
+patience: 100
 

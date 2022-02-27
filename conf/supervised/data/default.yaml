@@ -1,0 +1,10 @@
+_target_: src.mpml.data.datamodule.SupervisedDatamodule
+
+df: /Users/kevinmaikjablonka/git/kjappelbaum/mpml/data/data.csv
+
+batch_size: 128
+num_workers: 0
+
+features:
+
+labels:  

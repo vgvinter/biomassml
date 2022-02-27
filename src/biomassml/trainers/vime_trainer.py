@@ -12,14 +12,11 @@ from pytorch_lightning.callbacks import (
     EarlyStopping,
 )
 from pytorch_lightning.loggers import WandbLogger
-from mpml.data.datamodule import SupervisedDatamodule
-from mpml.models.fcnn import FCNN
+from mpml.data.vime_datamodule import VIMEDataModule
 from mpml.models.vime import VIMEModel
 
 from .utils import log_hyperparameters
 import numpy as np
-import torch
-from pytorch_lightning.callbacks import BackboneFinetuning
 
 
 def train(config: DictConfig):
@@ -36,31 +33,16 @@ def train(config: DictConfig):
         offline=True,
     )
 
-    datamodule: SupervisedDatamodule = instantiate(config.data)
+    datamodule: VIMEDataModule = instantiate(config.data)
 
     outname = f"{timestr}_emgl"
 
-    if config.model.pretrained_backbone is not None:
-        d = torch.load(config.model.pretrained_backbone)
-        backbone = VIMEModel.load_from_checkpoint(config.model.pretrained_backbone).backbone
-
-        model: FCNN = instantiate(
-            config.model,
-            _convert_="partial",
-            continuous_dim=len(config.data.features),
-            output_dim=len(config.data.labels),
-            target_names=config.data.labels,
-            pretrained_backbone=backbone,
-            bb_output_dim=d["hyper_parameters"]["bb_output_dim"],
-        )
-    else:
-        model: FCNN = instantiate(
-            config.model,
-            _convert_="partial",
-            continuous_dim=len(config.data.features),
-            output_dim=len(config.data.labels),
-            target_names=config.data.labels,
-        )
+    model: VIMEModel = instantiate(
+        config.model,
+        _convert_="partial",
+        continuous_dim=len(config.data.features),
+        output_dim=len(config.data.features),
+    )
 
     # summary(model, input_size=(1,len(config.data.features)))
 
@@ -68,7 +50,7 @@ def train(config: DictConfig):
     checkpointer = ModelCheckpoint(
         save_top_k=1,
         save_last=True,
-        monitor="valid_loss",
+        monitor="valid_total_loss",
         verbose=True,
         dirpath=outname,
         every_n_val_epochs=1,
@@ -80,11 +62,8 @@ def train(config: DictConfig):
 
     if config.patience:
         if config.patience > 0:
-            callbacks.append(EarlyStopping(monitor="valid_loss", patience=config.patience))
+            callbacks.append(EarlyStopping(monitor="valid_total_loss", patience=config.patience))
 
-    if "backbone_finetuning" in config:
-        bb_finetuning = BackboneFinetuning(**config.backbone_finetuning)
-        callbacks.append(bb_finetuning)
     # Initialize a trainer
 
     trainer: Trainer = instantiate(

@@ -1,0 +1,10 @@
+_target_: src.biomassml.models.vime.VIMEModel
+
+dropout_p:  0.3
+initialization:  kaiming
+activation: ReLU
+batch_norm:  true
+dropconnect: true
+layers: 48-48-48-48
+head_1_layers: 48-48-32
+head_2_layers: 48-48-32

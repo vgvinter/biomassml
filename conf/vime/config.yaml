@@ -1,0 +1,20 @@
+# @package _global_
+
+# specify here default training configuration
+defaults:
+  - _self_
+  - trainer: default.yaml
+  - model: default.yaml
+  - data: default.yaml
+
+seed: 1234
+
+project_name: mpml
+entity: kjappelbaum
+log_model: false
+
+swa: false
+tags: 
+  - vime
+patience: 100
+
