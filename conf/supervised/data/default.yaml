@@ -1,10 +1,28 @@
 _target_: src.mpml.data.datamodule.SupervisedDatamodule
 
-df: /Users/kevinmaikjablonka/git/kjappelbaum/mpml/data/data.csv
+df: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/data/data_CO2ads_biomass_properties.csv
 
 batch_size: 128
 num_workers: 0
 
 features:
+  - Pyrolysis T (K)
+  - BET (m2/g)
+  - T ads (K)
+  - P ads (bar)
+  - pore volume (cm3/g)
+  - C (%)
+  - N (%)
+  - H (%)
+  - S (%)
+  - O (%)
+  - ash (%)
+  - VM (%)
+  - FC (%)
+  - H/O (molar)
+  - O/C (molar)
+  - H/C (molar)
+  - (O+N)/C (molar)
 
-labels:  
+labels:
+  - CO2 ads (mmol/g)
