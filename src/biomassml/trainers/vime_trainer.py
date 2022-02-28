@@ -12,8 +12,8 @@ from pytorch_lightning.callbacks import (
     EarlyStopping,
 )
 from pytorch_lightning.loggers import WandbLogger
-from mpml.data.vime_datamodule import VIMEDataModule
-from mpml.models.vime import VIMEModel
+from biomassml.data.vime_datamodule import VIMEDataModule
+from biomassml.models.vime import VIMEModel
 
 from .utils import log_hyperparameters
 import numpy as np

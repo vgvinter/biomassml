@@ -1,6 +1,6 @@
 _target_: src.biomassml.data.vime_datamodule.VIMEDataModule
 
-df: /Users/kevinmaikjablonka/git/kjappelbaum/mpml/data/unsupervised_data.csv
+df: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/data/unsupervised_data.csv
 
 batch_size: 512
 num_workers: 0

@@ -12,9 +12,9 @@ from pytorch_lightning.callbacks import (
     EarlyStopping,
 )
 from pytorch_lightning.loggers import WandbLogger
-from mpml.data.datamodule import SupervisedDatamodule
-from mpml.models.fcnn import FCNN
-from mpml.models.vime import VIMEModel
+from biomassml.data.datamodule import SupervisedDatamodule
+from biomassml.models.fcnn import FCNN
+from biomassml.models.vime import VIMEModel
 
 from .utils import log_hyperparameters
 import numpy as np

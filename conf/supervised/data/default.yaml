@@ -1,4 +1,4 @@
-_target_: src.mpml.data.datamodule.SupervisedDatamodule
+_target_: src.biomassml.data.datamodule.SupervisedDatamodule
 
 df: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/data/data_CO2ads_biomass_properties.csv
 
@@ -6,7 +6,7 @@ batch_size: 128
 num_workers: 0
 
 features:
-  - Pyrolysis T (K)
+  - pyrolysis T (K)
   - BET (m2/g)
   - T ads (K)
   - P ads (bar)

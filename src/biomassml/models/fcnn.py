@@ -11,7 +11,6 @@ from torchmetrics.functional import (
 )
 
 import matplotlib.pyplot as plt
-from mpml.utils import plot_map
 import pandas as pd
 from typing import Union
 
@@ -50,7 +49,7 @@ class FCNN(pl.LightningModule):
         self._build_network()
 
         self.lr = 1e-3
-        self.loss_fn = nn.MSELoss(reduction="sum")
+        self.loss_fn = nn.MSELoss()
 
     def _build_sequential(self, input_dim, in_layers, outdim=None):
         layers = []
@@ -139,16 +138,6 @@ class FCNN(pl.LightningModule):
         x, y = batch
         y_hat = self.forward(x)
         loss = self.loss_fn(y_hat, y)
-
-        for i in range(len(y)):
-            fig, ax = plt.subplots(2, 1)
-            plot_map(pd.Series(y[i, :], self.target_names), self.target_names, ax[0])
-
-            plot_map(
-                pd.Series(y_hat[i, :].detach().numpy(), self.target_names), self.target_names, ax[1]
-            )
-
-            fig.savefig(f"prediction_{i}_{batch_idx}.png")
         self.get_metrics(y_hat, y, "test")
         self.log("test_loss", loss)
 

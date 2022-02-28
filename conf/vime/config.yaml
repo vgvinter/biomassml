@@ -9,7 +9,7 @@ defaults:
 
 seed: 1234
 
-project_name: mpml
+project_name: biomassml
 entity: kjappelbaum
 log_model: false
 
