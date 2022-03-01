@@ -40,27 +40,34 @@ def train(config: DictConfig):
 
     outname = f"{timestr}_emgl"
 
-    if config.model.pretrained_backbone is not None:
-        d = torch.load(config.model.pretrained_backbone)
-        backbone = VIMEModel.load_from_checkpoint(config.model.pretrained_backbone).backbone
+    chemistry_backbone = None
+    process_backbone = None
+    chemistry_bb_output_dim = None
+    process_bb_output_dim = None 
 
-        model: FCNN = instantiate(
-            config.model,
-            _convert_="partial",
-            continuous_dim=len(config.data.features),
-            output_dim=len(config.data.labels),
-            target_names=config.data.labels,
-            pretrained_backbone=backbone,
-            bb_output_dim=d["hyper_parameters"]["bb_output_dim"],
-        )
-    else:
-        model: FCNN = instantiate(
-            config.model,
-            _convert_="partial",
-            continuous_dim=len(config.data.features),
-            output_dim=len(config.data.labels),
-            target_names=config.data.labels,
-        )
+    if config.model.pretrained_chemistry_backbone is not None:
+        d = torch.load(config.model.pretrained_chemistry_backbone)
+        chemistry_backbone = VIMEModel.load_from_checkpoint(config.model.pretrained_chemistry_backbone).backbone
+        chemistry_bb_output_dim = d["hyper_parameters"]["bb_output_dim"]
+
+    if config.model.pretrained_process_backbone is not None:
+        d = torch.load(config.model.pretrained_process_backbone)
+        process_backbone = VIMEModel.load_from_checkpoint(config.model.pretrained_process_backbone).backbone
+        process_bb_output_dim = d["hyper_parameters"]["bb_output_dim"]
+
+    model: FCNN = instantiate(
+        config.model,
+        _convert_="partial",
+        chemistry_dim=len(config.data.chemistry_features),
+        process_dim=len(config.data.process_features),
+        output_dim=len(config.data.labels),
+        target_names=config.data.labels,
+        pretrained_chemistry_backbone=chemistry_backbone,
+        pretrained_process_backbone=process_backbone,
+        chemistry_bb_output_dim=chemistry_bb_output_dim,
+        process_bb_output_dim=process_bb_output_dim
+    )
+
 
     # summary(model, input_size=(1,len(config.data.features)))
 

@@ -30,8 +30,10 @@ class FCNN(pl.LightningModule):
         dropconnect: bool = False,
         output_dim: int = 1,
         target_names: list = None,
-        pretrained_backbone: Union[torch.nn.Sequential, None] = None,
-        bb_output_dim: int = None,
+        pretrained_chemistry_backbone: Union[torch.nn.Sequential, None] = None,
+        pretrained_process_backbone: Union[torch.nn.Sequential, None] = None,
+        chemistry_bb_output_dim: int = None,
+        process_bb_output_dim: int = None
     ) -> None:
         super().__init__()
         self.chemistry_dim = chemistry_dim
@@ -42,13 +44,14 @@ class FCNN(pl.LightningModule):
         self.dropout_p = dropout_p
         self.dropconnect = dropconnect
         self.output_dim = output_dim
-        self.process_backbone_layers 
         self.chemistry_backbone_layers = chemistry_backbone_layers
         self.process_backbone_layers = process_backbone_layers
         self.head_layers = head_layers
         self.target_names = target_names
-        self.pretrained_backbone = pretrained_backbone
-        self.bb_output_dim = bb_output_dim
+        self.pretrained_chemistry_backbone = pretrained_chemistry_backbone
+        self.pretrained_process_backbone = pretrained_process_backbone
+        self.chemistry_bb_output_dim = chemistry_bb_output_dim
+        self.process_bb_output_dim = process_bb_output_dim
         self.save_hyperparameters()
 
         self._build_network()
@@ -87,9 +90,9 @@ class FCNN(pl.LightningModule):
         # Todo(kjappelbaum): Remove duplicated code
         if self.pretrained_chemistry_backbone is None:
             self.chemistry_backbone, backbone_out_dim = self._build_sequential(
-                self.chemistry_dim, self.backbone_layers
+                self.chemistry_dim, self.chemistry_backbone_layers
             )
-            self.hparams.chemistry_bb_output_dim = backbone_out_dim
+            self.chemistry_bb_output_dim = backbone_out_dim
         else:
             self.chemistry_backbone = self.pretrained_chemistry_backbone
             assert isinstance(self.chemistry_backbone, nn.Sequential)
@@ -100,9 +103,9 @@ class FCNN(pl.LightningModule):
 
         if self.pretrained_process_backbone is None:
             self.process_backbone, backbone_out_dim = self._build_sequential(
-                self.process_dim, self.backbone_layers
+                self.process_dim, self.process_backbone_layers
             )
-            self.hparams.process_bb_output_dim = backbone_out_dim
+            self.process_bb_output_dim = backbone_out_dim
         else:
             self.process_backbone = self.pretrained_process_backbone
             assert isinstance(self.process_backbone, nn.Sequential)
@@ -112,10 +115,10 @@ class FCNN(pl.LightningModule):
             process_bb_output_dim = self.process_bb_output_dim        
 
         if self.head_layers is not None:
-            self.head, head_out_dim = self._build_sequential(process_bb_output_dim + chemistry_bb_output_dim, self.head_layers)
+            self.head, head_out_dim = self._build_sequential(self.process_bb_output_dim + self.chemistry_bb_output_dim, self.head_layers)
         else:
             self.head = nn.Sequential()
-            head_out_dim = backbone_out_dim
+            head_out_dim = self.process_bb_output_dim + self.chemistry_bb_output_dim
         self.output_layer = nn.Linear(head_out_dim, self.output_dim)
 
     def forward(self, x_chemistry, x_process):
@@ -138,8 +141,8 @@ class FCNN(pl.LightningModule):
         self.log(f"{tag}_r2", r2)
 
     def training_step(self, batch, batch_idx):
-        x, y = batch
-        y_hat = self.forward(x)
+        x_chemistry, x_process, y = batch
+        y_hat = self.forward(x_chemistry, x_process)
         # check if this reshape makes sense
         loss = (
             self.loss_fn(y_hat, y)
@@ -149,15 +152,15 @@ class FCNN(pl.LightningModule):
         return {"loss": loss}
 
     def validation_step(self, batch, batch_idx):
-        x, y = batch
-        y_hat = self.forward(x)
+        x_chemistry, x_process, y = batch
+        y_hat = self.forward(x_chemistry, x_process)
         loss = self.loss_fn(y_hat, y)
         self.get_metrics(y_hat, y, "valid")
         self.log("valid_loss", loss)
 
     def test_step(self, batch, batch_idx):
-        x, y = batch
-        y_hat = self.forward(x)
+        x_chemistry, x_process, y = batch
+        y_hat = self.forward(x_chemistry, x_process)
         loss = self.loss_fn(y_hat, y)
         self.get_metrics(y_hat, y, "test")
         self.log("test_loss", loss)

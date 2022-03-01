@@ -5,7 +5,10 @@ initialization:  kaiming
 activation: ReLU
 batch_norm:  true
 dropconnect: true
-backbone_layers: 48-48-48
+chemistry_backbone_layers: 48-48-48
+process_backbone_layers: 48-48-48
 head_layers: null
-pretrained_backbone: null 
-bb_output_dim: null
+pretrained_chemistry_backbone: null 
+pretrained_process_backbone: null 
+chemistry_bb_output_dim: null
+process_bb_output_dim: null
