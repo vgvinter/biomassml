@@ -1,6 +1,6 @@
 _target_: src.biomassml.data.datamodule.SupervisedDatamodule
 
-df: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/data/data_CO2ads_biomass_properties.csv
+df: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/data/co2_data.csv
 
 batch_size: 128
 num_workers: 0
@@ -18,11 +18,13 @@ features:
   - O (%)
   - ash (%)
   - VM (%)
-  - FC (%)
-  - H/O (molar)
-  - O/C (molar)
-  - H/C (molar)
-  - (O+N)/C (molar)
+  # - FC (%)
+  # - H/O (molar)
+  # - O/C (molar)
+  # - H/C (molar)
+  # - (O+N)/C (molar)
 
 labels:
   - CO2 ads (mmol/g)
+
+stratify_column: strat 

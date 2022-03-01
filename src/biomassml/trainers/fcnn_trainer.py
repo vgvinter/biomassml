@@ -33,7 +33,7 @@ def train(config: DictConfig):
         entity=config.entity,
         tags=config.tags,
         log_model=config.log_model,
-        offline=True,
+        offline=False,
     )
 
     datamodule: SupervisedDatamodule = instantiate(config.data)

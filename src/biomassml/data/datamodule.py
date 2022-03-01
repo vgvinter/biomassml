@@ -6,7 +6,7 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 from .dataset import SupervisedDataset
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 class SupervisedDatamodule(LightningDataModule):
     def __init__(
@@ -32,14 +32,14 @@ class SupervisedDatamodule(LightningDataModule):
         features = list(features)
         labels = list(labels)
         if scale: 
-            self.scaler = StandardScaler()
+            self.scaler = MinMaxScaler()
       
-            self.scaler.fit(train_df[features])
+            self.scaler.fit(train_df[features+labels])
 
        
-            train_df[features] = self.scaler.fit_transform(train_df[features])
-            valid_df[features] = self.scaler.transform(valid_df[features])
-            test_df[features] = self.scaler.transform(test_df[features])
+            train_df[features + labels] = self.scaler.fit_transform(train_df[features + labels])
+            valid_df[features + labels] = self.scaler.transform(valid_df[features + labels])
+            test_df[features + labels] = self.scaler.transform(test_df[features + labels])
         else: 
             self.scaler = None
         
