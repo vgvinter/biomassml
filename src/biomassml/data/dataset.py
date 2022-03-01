@@ -7,10 +7,17 @@ from .utils import as_tt
 
 
 class SupervisedDataset(Dataset):
-    def __init__(self, df: pd.DataFrame, feature_names: List[str], label_names: List[str]):
-        self.df = df.dropna(subset=feature_names+label_names)
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        chemistry_features: List[str],
+        process_features: List[str],
+        label_names: List[str],
+    ):
+        self.df = df.dropna(subset=chemistry_features + process_features + label_names)
         self.label_names = label_names
-        self.feature_names = feature_names
+        self.chemistry_features = chemistry_features
+        self.process_features = process_features
 
     def __len__(self):
         return len(self.df)
@@ -19,4 +26,8 @@ class SupervisedDataset(Dataset):
 
         row = self.df.iloc[idx]
 
-        return as_tt(row[self.feature_names]), as_tt(row[self.label_names])
+        return (
+            as_tt(row[self.chemistry_features]),
+            as_tt(row[self.process_features]),
+            as_tt(row[self.label_names]),
+        )

@@ -6,5 +6,5 @@ activation: ReLU
 batch_norm:  true
 dropconnect: true
 layers: 48-48-48-48
-head_1_layers: 48-48-32
-head_2_layers: 48-48-32
+head_1_layers: 32-32
+head_2_layers: 32-32

@@ -18,8 +18,10 @@ from typing import Union
 class FCNN(pl.LightningModule):
     def __init__(
         self,
-        continuous_dim: int,
-        backbone_layers: str = "264-264",
+        chemistry_dim: int,
+        process_dim: int, 
+        chemistry_backbone_layers: str = "264-264",
+        process_backbone_layers: str = "264-264",
         head_layers: str = "264-264",
         dropout_p: float = 0.1,
         initialization: str = "kaiming",
@@ -32,14 +34,17 @@ class FCNN(pl.LightningModule):
         bb_output_dim: int = None,
     ) -> None:
         super().__init__()
-        self.continuous_dim = continuous_dim
+        self.chemistry_dim = chemistry_dim
+        self.process_dim = process_dim
         self.initialization = initialization
         self.activation = activation
         self.batch_norm = batch_norm
         self.dropout_p = dropout_p
         self.dropconnect = dropconnect
         self.output_dim = output_dim
-        self.backbone_layers = backbone_layers
+        self.process_backbone_layers 
+        self.chemistry_backbone_layers = chemistry_backbone_layers
+        self.process_backbone_layers = process_backbone_layers
         self.head_layers = head_layers
         self.target_names = target_names
         self.pretrained_backbone = pretrained_backbone
@@ -79,28 +84,44 @@ class FCNN(pl.LightningModule):
     def _build_network(self):
         # Linear Layers
 
-        if self.pretrained_backbone is None:
-            self.backbone, backbone_out_dim = self._build_sequential(
-                self.continuous_dim, self.backbone_layers
+        # Todo(kjappelbaum): Remove duplicated code
+        if self.pretrained_chemistry_backbone is None:
+            self.chemistry_backbone, backbone_out_dim = self._build_sequential(
+                self.chemistry_dim, self.backbone_layers
             )
-            self.hparams.bb_output_dim = backbone_out_dim
+            self.hparams.chemistry_bb_output_dim = backbone_out_dim
         else:
-            self.backbone = self.pretrained_backbone
-            assert isinstance(self.backbone, nn.Sequential)
+            self.chemistry_backbone = self.pretrained_chemistry_backbone
+            assert isinstance(self.chemistry_backbone, nn.Sequential)
             assert isinstance(
-                self.bb_output_dim, int
+                self.chemistry_bb_output_dim, int
             ), "If you use a pretrained backbone, you must specify the output dimension of the backbone as int"
-            backbone_out_dim = self.bb_output_dim
+            chemistry_bb_output_dim = self.chemistry_bb_output_dim
+
+        if self.pretrained_process_backbone is None:
+            self.process_backbone, backbone_out_dim = self._build_sequential(
+                self.process_dim, self.backbone_layers
+            )
+            self.hparams.process_bb_output_dim = backbone_out_dim
+        else:
+            self.process_backbone = self.pretrained_process_backbone
+            assert isinstance(self.process_backbone, nn.Sequential)
+            assert isinstance(
+                self.process_bb_output_dim, int
+            ), "If you use a pretrained backbone, you must specify the output dimension of the backbone as int"
+            process_bb_output_dim = self.process_bb_output_dim        
 
         if self.head_layers is not None:
-            self.head, head_out_dim = self._build_sequential(backbone_out_dim, self.head_layers)
+            self.head, head_out_dim = self._build_sequential(process_bb_output_dim + chemistry_bb_output_dim, self.head_layers)
         else:
             self.head = nn.Sequential()
             head_out_dim = backbone_out_dim
         self.output_layer = nn.Linear(head_out_dim, self.output_dim)
 
-    def forward(self, x):
-        x = self.backbone(x)
+    def forward(self, x_chemistry, x_process):
+        x_chem = self.chemistry_backbone(x_chemistry)
+        x_proc = self.process_backbone(x_process)
+        x = torch.cat((x_chem, x_proc), dim=1)
         x = self.head(x)
         x = self.output_layer(x)
         x = torch.sigmoid(x)

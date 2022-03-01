@@ -5,12 +5,14 @@ df: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/data/co2_data.csv
 batch_size: 128
 num_workers: 0
 
-features:
+process_features:
   - pyrolysis T (K)
   - BET (m2/g)
   - T ads (K)
   - P ads (bar)
   - pore volume (cm3/g)
+
+chemistry_features:
   - C (%)
   - N (%)
   - H (%)
@@ -18,7 +20,7 @@ features:
   - O (%)
   - ash (%)
   - VM (%)
-  # - FC (%)
+  - FC (%)
   # - H/O (molar)
   # - O/C (molar)
   # - H/C (molar)
