@@ -64,7 +64,7 @@ def train(config: DictConfig):
         chemistry_dim=len(config.data.chemistry_features),
         process_dim=len(config.data.process_features),
         output_dim=len(config.data.labels),
-        target_names=config.data.labels,
+        target_names=list(config.data.labels),
         pretrained_chemistry_backbone=chemistry_backbone,
         pretrained_process_backbone=process_backbone,
         chemistry_bb_output_dim=chemistry_bb_output_dim,

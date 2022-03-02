@@ -16,10 +16,10 @@ def fit_scalers(dl, chemistry_scaler, process_scaler, label_scaler):
         process_features.append(process_x)
         ys.append(y)
 
-    process_features = torch.stack(process_features, dim=0)
-    chemistry_features = torch.stack(chemistry_features, dim=0)
+    process_features = torch.cat(process_features, dim=0)
+    chemistry_features = torch.cat(chemistry_features, dim=0)
 
-    ys = torch.stack(ys, dim=0)
+    ys = torch.cat(ys, dim=0)
 
     if process_scaler is not None:
         process_scaler.fit(process_features)

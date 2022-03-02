@@ -7,9 +7,6 @@ max_epochs: 200
 
 resume_from_checkpoint: null
 
-# number of validation steps to execute at the beginning of the training
-num_sanity_val_steps: 10
-
 precision: 32
 
 auto_lr_find: false 
@@ -17,3 +14,5 @@ auto_lr_find: false
 overfit_batches: 0.0
 
 limit_train_batches: 1.0
+
+num_sanity_val_steps: 0

@@ -1,13 +1,13 @@
 _target_: src.biomassml.models.fcnn.FCNN
 
-dropout_p:  0.4
+dropout_p:  0.1
 initialization:  kaiming
 activation: ReLU
 batch_norm:  false
-dropconnect: true
-chemistry_backbone_layers: 8-8-8
-process_backbone_layers: 8-8-8
-head_layers: 8-8-
+dropconnect: false
+chemistry_backbone_layers: 8-16
+process_backbone_layers: 6-16
+head_layers: 16-16-16
 pretrained_chemistry_backbone: null 
 pretrained_process_backbone: null 
 chemistry_bb_output_dim: null

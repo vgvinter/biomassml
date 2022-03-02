@@ -98,7 +98,7 @@ class KFoldDataModule(BaseKFoldDataModule):
             self.chemistry_scaler = TorchStandardScaler()
 
     def fit_transformers(self, train_dl):
-        fit_scalers(train_dl, self.feature_scaler, self.label_scaler)
+        fit_scalers(train_dl, self.chemistry_scaler, self.process_scaler, self.label_scaler)
 
     def setup_folds(self) -> None:
         if self.stratified:

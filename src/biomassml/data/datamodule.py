@@ -6,9 +6,10 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 from .dataset import SupervisedDataset
 import pandas as pd
-from biomassml.utils.scaler import TorchStandardScaler
+from biomassml.utils.scaler import TorchStandardScaler, TorchMinMaxScaler
 from .utils import fit_scalers
 from loguru import logger
+
 
 class SupervisedDatamodule(LightningDataModule):
     def __init__(
@@ -45,9 +46,9 @@ class SupervisedDatamodule(LightningDataModule):
         self.batch_size = batch_size
         self.num_workers = num_workers
 
-        if label_scale: 
-            self.label_scaler = TorchStandardScaler()
-        else: 
+        if label_scale:
+            self.label_scaler = TorchMinMaxScaler()
+        else:
             self.label_scaler = None
         if feature_scale:
             self.process_scaler = TorchStandardScaler()
@@ -57,11 +58,10 @@ class SupervisedDatamodule(LightningDataModule):
             self.chemistry_scaler = TorchStandardScaler()
 
     def fit_transformers(self, train_dl):
-        logger.info('Fitting transformers')
-        fit_scalers(train_dl, self.feature_scaler, self.label_scaler)
+        logger.info("Fitting transformers")
+        fit_scalers(train_dl, self.chemistry_scaler, self.process_scaler, self.label_scaler)
 
     def train_dataloader(self) -> DataLoader:
-        self.fit_transformers()
         train_dl = DataLoader(
             dataset=SupervisedDataset(
                 self.train_df, self.chemistry_features, self.process_features, self.labels

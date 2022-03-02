@@ -1,4 +1,6 @@
 # @package _global_
+# @package _global_
+
 data:
   df: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/data/data_GASIF_biomass.csv
   batch_size: 8
@@ -10,7 +12,7 @@ data:
     - T (K)
     - SR
     - He_density (g/cm3)
-  
+
   chemistry_features:
     - C (%)
     - N (%)
@@ -24,14 +26,19 @@ data:
   labels:
     - volCO2 (%)
     - volCO (%)
-
+    - volCH4 (%)
+    - volH2 (%)
+    - volCOMB (%)
+    - volSYNG (%)
+    - H2_CO
 
   stratify_column: null
 
 
 model:
-  pretrained_chemistry_backbone: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/outputs/2022-03-02/08-48-49/20220302-084850_emgl/epoch=196-step=590.ckpt
-  head_layers: 8-
+  pretrained_chemistry_backbone: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/outputs/2022-03-02/16-27-56/20220302-162758_emgl/epoch=196-step=590.ckpt
+  head_layers: 16-8
+  process_backbone_layers: 6-6
 
 backbone_finetuning:
   unfreeze_backbone_at_epoch: 100

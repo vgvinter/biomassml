@@ -102,7 +102,6 @@ class FCNN(pl.LightningModule):
             assert isinstance(
                 self.chemistry_bb_output_dim, int
             ), "If you use a pretrained backbone, you must specify the output dimension of the backbone as int"
-            chemistry_bb_output_dim = self.chemistry_bb_output_dim
 
         if self.pretrained_process_backbone is None:
             self.process_backbone, backbone_out_dim = self._build_sequential(
@@ -115,7 +114,6 @@ class FCNN(pl.LightningModule):
             assert isinstance(
                 self.process_bb_output_dim, int
             ), "If you use a pretrained backbone, you must specify the output dimension of the backbone as int"
-            process_bb_output_dim = self.process_bb_output_dim
 
         if self.head_layers is not None:
             self.head, head_out_dim = self._build_sequential(
@@ -130,12 +128,16 @@ class FCNN(pl.LightningModule):
 
     def compute_loss(self, y_pred, y_true):
         loss = self.loss_fn(y_pred, y_true)
-        conservation_loss = 0
-        if self.conservation_loss_weight:
-            conservation_loss += conservation_loss(y_pred, y_true, self.target_names)
-        total_loss = loss + self.conservation_loss_weight * conservation_loss
+        total_cl = 0
+        cl = conservation_loss(y_pred, self.target_names, self.trainer.datamodule.label_scaler)
+        total_cl += cl["total_conservation_loss"]
 
-        return {"total_loss": total_loss, "loss": loss, "conservation_loss": conservation_loss}
+        total_loss = loss + self.conservation_loss_weight * total_cl
+
+        d = {"total_loss": total_loss, "loss": loss, "conservation_loss": cl}
+        d.update(cl)
+
+        return d
 
     def forward(self, x_chemistry, x_process):
         x_chem = self.chemistry_backbone(x_chemistry)
@@ -150,12 +152,14 @@ class FCNN(pl.LightningModule):
         mae = mean_absolute_error(yhat, y)
         mse = mean_squared_error(yhat, y)
         mape = mean_absolute_percentage_error(yhat, y)
-        # Skipping R2 for now as it is not good metric for LOOCV
-        # r2 = r2_score(yhat, y)
+     
         self.log(f"{tag}_mae", mae)
         self.log(f"{tag}_mse", mse)
         self.log(f"{tag}_mape", mape)
-        # self.log(f"{tag}_r2", r2)
+        if len(yhat) > 2:
+            # Skipping R2 for now as it is not good metric for LOOCV
+            r2 = r2_score(yhat, y)
+            self.log(f"{tag}_r2", r2)
 
     def process_batch(self, batch):
         x_chemistry, x_process, y = batch
