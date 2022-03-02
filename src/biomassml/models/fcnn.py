@@ -169,5 +169,5 @@ class FCNN(pl.LightningModule):
         self.log("test_loss", loss)
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
+        optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, self.parameters()), self.lr)
         return optimizer

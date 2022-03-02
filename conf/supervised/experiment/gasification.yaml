@@ -20,10 +20,6 @@
       - ash (%)
       - VM (%)
       - FC (%)
-      - H/O (molar) 
-      - O/C (molar) 
-      - H/C (molar) 
-      - (O+N)/C (molar)
 
     labels:
       # - volCO2 (%)

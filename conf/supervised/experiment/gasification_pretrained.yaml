@@ -20,26 +20,22 @@ data:
     - ash (%)
     - VM (%)
     - FC (%)
-    - H/O (molar) 
-    - O/C (molar) 
-    - H/C (molar) 
-    - (O+N)/C (molar)
 
   labels:
-    # - volCO2 (%)
+    - volCO2 (%)
     - volCO (%)
-    # - volCH4 (%)
-    # - volH2 (%)
-    # - volCOMB (%)
-    # - volSYNG (%)
+    - volCH4 (%)
+    - volH2 (%)
+    - volCOMB (%)
+    - volSYNG (%)
 
   stratify_column: null
 
 
 model:
-  pretrained_chemistry_backbone: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/outputs/2022-03-02/08-03-08/20220302-080310_emgl/epoch=198-step=596.ckpt
+  pretrained_chemistry_backbone: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/outputs/2022-03-02/08-48-49/20220302-084850_emgl/epoch=196-step=590.ckpt
   head_layers: 8-
 
 backbone_finetuning:
-  unfreeze_backbone_at_epoch: 10
+  unfreeze_backbone_at_epoch: 100
   backbone_initial_ratio_lr: 0.1

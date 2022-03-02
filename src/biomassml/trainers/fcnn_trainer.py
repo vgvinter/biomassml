@@ -19,7 +19,7 @@ from biomassml.models.vime import VIMEModel
 from .utils import log_hyperparameters
 import numpy as np
 import torch
-from pytorch_lightning.callbacks import BackboneFinetuning
+from biomassml.callbacks.backbone_finetuning import BiomassBackboneFinetuning
 
 
 def train(config: DictConfig):
@@ -45,15 +45,18 @@ def train(config: DictConfig):
     chemistry_bb_output_dim = None
     process_bb_output_dim = None 
 
+    bb_finetune_names = []
     if config.model.pretrained_chemistry_backbone is not None:
         d = torch.load(config.model.pretrained_chemistry_backbone)
         chemistry_backbone = FCNN.load_from_checkpoint(config.model.pretrained_chemistry_backbone).chemistry_backbone
         chemistry_bb_output_dim = d["hyper_parameters"]["chemistry_bb_output_dim"]
+        bb_finetune_names.append("chemistry_backbone")
 
     if config.model.pretrained_process_backbone is not None:
         d = torch.load(config.model.pretrained_process_backbone)
         process_backbone = FCNN.load_from_checkpoint(config.model.pretrained_process_backbone).process_backbone
         process_bb_output_dim = d["hyper_parameters"]["process_bb_output_dim"]
+        bb_finetune_names.append("process_backbone")
 
     model: FCNN = instantiate(
         config.model,
@@ -83,14 +86,14 @@ def train(config: DictConfig):
     callbacks.append(checkpointer)
     callbacks.append(ModelSummary(max_depth=-1))
     if config.swa:
-        callbacks.append(StochasticWeightAveraging())
+        callbacks.append(StochasticWeightAveraging(swa_epoch_start=10))
 
     if config.patience:
         if config.patience > 0:
             callbacks.append(EarlyStopping(monitor="valid_loss", patience=config.patience))
 
     if "backbone_finetuning" in config:
-        bb_finetuning = BackboneFinetuning(**config.backbone_finetuning)
+        bb_finetuning = BiomassBackboneFinetuning(**config.backbone_finetuning, backbones=bb_finetune_names)
         callbacks.append(bb_finetuning)
     # Initialize a trainer
 
