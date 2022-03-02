@@ -47,13 +47,13 @@ def train(config: DictConfig):
 
     if config.model.pretrained_chemistry_backbone is not None:
         d = torch.load(config.model.pretrained_chemistry_backbone)
-        chemistry_backbone = VIMEModel.load_from_checkpoint(config.model.pretrained_chemistry_backbone).backbone
-        chemistry_bb_output_dim = d["hyper_parameters"]["bb_output_dim"]
+        chemistry_backbone = FCNN.load_from_checkpoint(config.model.pretrained_chemistry_backbone).chemistry_backbone
+        chemistry_bb_output_dim = d["hyper_parameters"]["chemistry_bb_output_dim"]
 
     if config.model.pretrained_process_backbone is not None:
         d = torch.load(config.model.pretrained_process_backbone)
-        process_backbone = VIMEModel.load_from_checkpoint(config.model.pretrained_process_backbone).backbone
-        process_bb_output_dim = d["hyper_parameters"]["bb_output_dim"]
+        process_backbone = FCNN.load_from_checkpoint(config.model.pretrained_process_backbone).process_backbone
+        process_bb_output_dim = d["hyper_parameters"]["process_bb_output_dim"]
 
     model: FCNN = instantiate(
         config.model,

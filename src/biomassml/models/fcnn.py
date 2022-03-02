@@ -64,6 +64,7 @@ class FCNN(pl.LightningModule):
         _curr_units = input_dim
 
         in_layers = in_layers.split("-")
+        in_layers = [int(x) for x in in_layers if x != ""]
         if outdim is not None:
             in_layers.append(outdim)
         for i, units in enumerate(in_layers):
@@ -120,6 +121,8 @@ class FCNN(pl.LightningModule):
             self.head = nn.Sequential()
             head_out_dim = self.process_bb_output_dim + self.chemistry_bb_output_dim
         self.output_layer = nn.Linear(head_out_dim, self.output_dim)
+        self.hparams.chemistry_bb_output_dim = self.chemistry_bb_output_dim
+        self.hparams.process_bb_output_dim = self.process_bb_output_dim
 
     def forward(self, x_chemistry, x_process):
         x_chem = self.chemistry_backbone(x_chemistry)

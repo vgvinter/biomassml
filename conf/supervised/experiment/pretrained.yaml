@@ -1,8 +1,8 @@
 # @package _global_
 
 model:
-  pretrained_backbone: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/outputs/2022-03-01/11-14-16/20220301-111418_emgl/epoch=348-step=1395.ckpt
-  head_layers: 16-16
+  pretrained_chemistry_backbone: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/outputs/2022-03-02/07-51-25/20220302-075127_emgl/epoch=172-step=518.ckpt
+  head_layers: 8-
 
 backbone_finetuning:
   unfreeze_backbone_at_epoch: 10
