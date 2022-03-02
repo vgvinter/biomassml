@@ -1,3 +1,4 @@
+from tkinter import SE
 from turtle import back
 import pytorch_lightning as pl
 import torch.nn as nn
@@ -10,16 +11,15 @@ from torchmetrics.functional import (
     r2_score,
 )
 
-import matplotlib.pyplot as plt
-import pandas as pd
-from typing import Union
+from typing import Sequence, Union
+from biomassml.utils.conservation_law import conservation_loss
 
 
 class FCNN(pl.LightningModule):
     def __init__(
         self,
         chemistry_dim: int,
-        process_dim: int, 
+        process_dim: int,
         chemistry_backbone_layers: str = "264-264",
         process_backbone_layers: str = "264-264",
         head_layers: str = "264-264",
@@ -29,11 +29,12 @@ class FCNN(pl.LightningModule):
         batch_norm: bool = False,
         dropconnect: bool = False,
         output_dim: int = 1,
-        target_names: list = None,
+        conservation_loss_weight: float = 0.1,
+        target_names: Sequence[str] = None,
         pretrained_chemistry_backbone: Union[torch.nn.Sequential, None] = None,
         pretrained_process_backbone: Union[torch.nn.Sequential, None] = None,
         chemistry_bb_output_dim: int = None,
-        process_bb_output_dim: int = None
+        process_bb_output_dim: int = None,
     ) -> None:
         super().__init__()
         self.chemistry_dim = chemistry_dim
@@ -52,6 +53,7 @@ class FCNN(pl.LightningModule):
         self.pretrained_process_backbone = pretrained_process_backbone
         self.chemistry_bb_output_dim = chemistry_bb_output_dim
         self.process_bb_output_dim = process_bb_output_dim
+        self.conservation_loss_weight = conservation_loss_weight
         self.save_hyperparameters()
 
         self._build_network()
@@ -113,16 +115,27 @@ class FCNN(pl.LightningModule):
             assert isinstance(
                 self.process_bb_output_dim, int
             ), "If you use a pretrained backbone, you must specify the output dimension of the backbone as int"
-            process_bb_output_dim = self.process_bb_output_dim        
+            process_bb_output_dim = self.process_bb_output_dim
 
         if self.head_layers is not None:
-            self.head, head_out_dim = self._build_sequential(self.process_bb_output_dim + self.chemistry_bb_output_dim, self.head_layers)
+            self.head, head_out_dim = self._build_sequential(
+                self.process_bb_output_dim + self.chemistry_bb_output_dim, self.head_layers
+            )
         else:
             self.head = nn.Sequential()
             head_out_dim = self.process_bb_output_dim + self.chemistry_bb_output_dim
         self.output_layer = nn.Linear(head_out_dim, self.output_dim)
         self.hparams.chemistry_bb_output_dim = self.chemistry_bb_output_dim
         self.hparams.process_bb_output_dim = self.process_bb_output_dim
+
+    def compute_loss(self, y_pred, y_true):
+        loss = self.loss_fn(y_pred, y_true)
+        conservation_loss = 0
+        if self.conservation_loss_weight:
+            conservation_loss += conservation_loss(y_pred, y_true, self.target_names)
+        total_loss = loss + self.conservation_loss_weight * conservation_loss
+
+        return {"total_loss": total_loss, "loss": loss, "conservation_loss": conservation_loss}
 
     def forward(self, x_chemistry, x_process):
         x_chem = self.chemistry_backbone(x_chemistry)
@@ -137,36 +150,56 @@ class FCNN(pl.LightningModule):
         mae = mean_absolute_error(yhat, y)
         mse = mean_squared_error(yhat, y)
         mape = mean_absolute_percentage_error(yhat, y)
-        r2 = r2_score(yhat, y)
+        # Skipping R2 for now as it is not good metric for LOOCV
+        # r2 = r2_score(yhat, y)
         self.log(f"{tag}_mae", mae)
         self.log(f"{tag}_mse", mse)
         self.log(f"{tag}_mape", mape)
-        self.log(f"{tag}_r2", r2)
+        # self.log(f"{tag}_r2", r2)
+
+    def process_batch(self, batch):
+        x_chemistry, x_process, y = batch
+        if self.trainer.datamodule.label_scaler is not None:
+            y = self.trainer.datamodule.label_scaler.transform(y)
+
+        if self.trainer.datamodule.chemistry_scaler is not None:
+            x_chemistry = self.trainer.datamodule.chemistry_scaler.transform(x_chemistry)
+
+        if self.trainer.datamodule.process_scaler is not None:
+            x_process = self.trainer.datamodule.process_scaler.transform(x_process)
+
+        return x_chemistry, x_process, y
 
     def training_step(self, batch, batch_idx):
-        x_chemistry, x_process, y = batch
+        x_chemistry, x_process, y = self.process_batch(batch)
         y_hat = self.forward(x_chemistry, x_process)
         # check if this reshape makes sense
-        loss = (
-            self.loss_fn(y_hat, y)
-        )
-        self.log("train_loss", loss)
+        losses = self.compute_loss(y_hat, y)
+
+        for k, v in losses.items():
+            self.log(f"train_{k}", v)
         self.get_metrics(y_hat, y, "train")
-        return {"loss": loss}
+        return {"loss": losses["total_loss"]}
 
     def validation_step(self, batch, batch_idx):
-        x_chemistry, x_process, y = batch
+        x_chemistry, x_process, y = self.process_batch(batch)
         y_hat = self.forward(x_chemistry, x_process)
-        loss = self.loss_fn(y_hat, y)
+        # check if this reshape makes sense
+        losses = self.compute_loss(y_hat, y)
+
+        for k, v in losses.items():
+            self.log(f"valid_{k}", v)
         self.get_metrics(y_hat, y, "valid")
-        self.log("valid_loss", loss)
 
     def test_step(self, batch, batch_idx):
-        x_chemistry, x_process, y = batch
+        x_chemistry, x_process, y = self.process_batch(batch)
         y_hat = self.forward(x_chemistry, x_process)
-        loss = self.loss_fn(y_hat, y)
+        # check if this reshape makes sense
+        losses = self.compute_loss(y_hat, y)
+
+        for k, v in losses.items():
+            self.log(f"test_{k}", v)
         self.get_metrics(y_hat, y, "test")
-        self.log("test_loss", loss)
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, self.parameters()), self.lr)

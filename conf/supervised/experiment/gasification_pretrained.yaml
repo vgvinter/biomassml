@@ -24,10 +24,7 @@ data:
   labels:
     - volCO2 (%)
     - volCO (%)
-    - volCH4 (%)
-    - volH2 (%)
-    - volCOMB (%)
-    - volSYNG (%)
+
 
   stratify_column: null
 

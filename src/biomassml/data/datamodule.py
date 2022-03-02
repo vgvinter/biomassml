@@ -6,8 +6,9 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 from .dataset import SupervisedDataset
 import pandas as pd
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-
+from biomassml.utils.scaler import TorchStandardScaler
+from .utils import fit_scalers
+from loguru import logger
 
 class SupervisedDatamodule(LightningDataModule):
     def __init__(
@@ -21,7 +22,8 @@ class SupervisedDatamodule(LightningDataModule):
         stratify_column: str = None,
         batch_size: int = 64,
         num_workers: int = 4,
-        scale: bool = True,
+        label_scale: bool = True,
+        feature_scale: bool = True,
     ) -> None:
         super().__init__()
         df = pd.read_csv(df)
@@ -31,16 +33,6 @@ class SupervisedDatamodule(LightningDataModule):
         valid_df, test_df = train_test_split(test, train_size=test_size, stratify=strat)
         features = list(chemistry_features + process_features)
         labels = list(labels)
-        if scale:
-            self.scaler = MinMaxScaler()
-
-            self.scaler.fit(train_df[features + labels])
-
-            train_df[features + labels] = self.scaler.fit_transform(train_df[features + labels])
-            valid_df[features + labels] = self.scaler.transform(valid_df[features + labels])
-            test_df[features + labels] = self.scaler.transform(test_df[features + labels])
-        else:
-            self.scaler = None
 
         self.train_df = train_df
         self.valid_df = valid_df
@@ -53,8 +45,24 @@ class SupervisedDatamodule(LightningDataModule):
         self.batch_size = batch_size
         self.num_workers = num_workers
 
+        if label_scale: 
+            self.label_scaler = TorchStandardScaler()
+        else: 
+            self.label_scaler = None
+        if feature_scale:
+            self.process_scaler = TorchStandardScaler()
+            self.chemistry_scaler = TorchStandardScaler()
+        else:
+            self.process_scaler = None
+            self.chemistry_scaler = TorchStandardScaler()
+
+    def fit_transformers(self, train_dl):
+        logger.info('Fitting transformers')
+        fit_scalers(train_dl, self.feature_scaler, self.label_scaler)
+
     def train_dataloader(self) -> DataLoader:
-        return DataLoader(
+        self.fit_transformers()
+        train_dl = DataLoader(
             dataset=SupervisedDataset(
                 self.train_df, self.chemistry_features, self.process_features, self.labels
             ),
@@ -63,6 +71,8 @@ class SupervisedDatamodule(LightningDataModule):
             num_workers=self.num_workers,
             pin_memory=True,
         )
+        self.fit_transformers(train_dl)
+        return train_dl
 
     def val_dataloader(self) -> DataLoader:
         return DataLoader(

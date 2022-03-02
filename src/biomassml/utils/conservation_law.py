@@ -1,7 +1,7 @@
 import torch
 
 
-def conservation_loss(y, names, scaler):
+def conservation_loss(y, names, label_scaler=None):
     """
     Compute the conservation loss.
 
@@ -19,8 +19,8 @@ def conservation_loss(y, names, scaler):
     volCOMB_loss = 0
     mass_conservation_loss = 0
 
-    if scaler: 
-        this_y = scaler.inverse_transform(y.copy())
+    if label_scaler is not None: 
+        this_y = label_scaler.inverse_transform(y.copy())
     else:
         this_y = y
 
