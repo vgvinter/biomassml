@@ -7,12 +7,22 @@ from loguru import logger
 import wandb
 
 
-def loocv_pipe(kernel, X, y, features, coregionalized: bool = False, ard: bool = False):
+def loocv_pipe(
+    kernel,
+    X,
+    y,
+    features,
+    coregionalized: bool = False,
+    ard: bool = False,
+    y_scramble: bool = False,
+):
     """
     Perform leave-one-out cross-validation on the given kernel.
     """
     run = wandb.init(project="biomassml")
-    run.config.update({"kernel": kernel, "coregionalized": coregionalized, "ard": ard})
+    run.config.update(
+        {"kernel": kernel, "coregionalized": coregionalized, "ard": ard, "y_scramble": y_scramble}
+    )
     time = get_timestring()
     if ard:
         if coregionalized:
@@ -46,4 +56,4 @@ def run_loocv_from_file(file, features, labels, kernel, coregionalized, ard, y_s
     if y_scramble:
         y = df[labels].sample(len(df)).values
     logger.info(f"Feature shape: {X.shape}, label shape {y.shape}")
-    loocv_pipe(kernel, X, y, features, coregionalized, ard)
+    loocv_pipe(kernel, X, y, features, coregionalized, ard, y_scramble)
