@@ -44,6 +44,6 @@ def run_loocv_from_file(file, features, labels, kernel, coregionalized, ard, y_s
     X = df[features].values
     y = df[labels].values
     if y_scramble:
-        y = df[labels].sample().values
+        y = df[labels].sample(len(df)).values
     logger.info(f"Feature shape: {X.shape}, label shape {y.shape}")
     loocv_pipe(kernel, X, y, features, coregionalized, ard)
