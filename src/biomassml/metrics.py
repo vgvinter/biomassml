@@ -6,6 +6,7 @@ import numpy as np
 from scipy.stats import norm
 from loguru import logger
 from .predict import predict, predict_coregionalized
+from .build_model import set_xy_coregionalized
 
 __all__ = [
     "get_regression_metrics",
@@ -95,6 +96,7 @@ def loocv_train_test(gp_model, X, y, coregionalized: bool = False, n_restarts=20
         predictions_train = {}
         predictions_test = {}
         if coregionalized:
+            set_xy_coregionalized(gp_model, X_train, y_train)
             gp_model.optimize_restarts(n_restarts, verbose=False)
 
             for objective in range(y.shape[1]):
@@ -116,6 +118,7 @@ def loocv_train_test(gp_model, X, y, coregionalized: bool = False, n_restarts=20
                 }
 
         else:
+            gp_model.set_XY(X_train, y_train)
             gp_model.optimize_restarts(n_restarts, verbose=False)
             y_pred_test_mu, y_pred_test_std = predict(gp_model, X_test)
             y_pred_train_mu, y_pred_train_std = predict(gp_model, X_train)
@@ -136,9 +139,9 @@ def loocv_train_test(gp_model, X, y, coregionalized: bool = False, n_restarts=20
     test_metrics = {}
 
     for objective in range(y.shape[1]):
-        y_true = np.concatenate([pred["true"] for pred in prediction_collection_test])
-        y_pred_mu = np.concatenate([pred["mu"] for pred in prediction_collection_test])
-        y_pred_std = np.concatenate([pred["std"] for pred in prediction_collection_test])
+        y_true = np.concatenate([pred[objective]["true"] for pred in prediction_collection_test])
+        y_pred_mu = np.concatenate([pred[objective]["mu"] for pred in prediction_collection_test])
+        y_pred_std = np.concatenate([pred[objective]["std"] for pred in prediction_collection_test])
         y_err = y_pred_std
         test_metrics[objective] = {
             "nll": negative_log_likelihood_Gaussian(y_true, y_pred_mu, y_err),

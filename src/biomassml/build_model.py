@@ -107,3 +107,19 @@ def build_model(
     )
     m[".*Gaussian_noise_*"] = 0.1
     return m
+
+
+def set_xy_coregionalized(model, X, y, mask=None):
+    """Wrapper to update a coregionalized model with new data"""
+    num_target = y.shape[1]
+    if mask is None:
+        X_array = [X] * num_target
+        y_array = [y[:, i].reshape(-1, 1) for i in range(num_target)]
+
+    else:
+        X_array = [X[mask[:, i]] for i in range(num_target)]
+        y_array = [y[mask[:, i], i].reshape(-1, 1) for i in range(num_target)]
+
+    model.set_XY(X_array, y_array)
+
+    return model
