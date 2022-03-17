@@ -3,6 +3,7 @@ from .metrics import loocv_train_test
 from .utils import get_timestring
 from .io import dump_pickle
 import pandas as pd
+from loguru import logger
 
 
 def loocv_pipe(kernel, X, y, coregionalized: bool = False, ard: bool = False):
@@ -12,14 +13,14 @@ def loocv_pipe(kernel, X, y, coregionalized: bool = False, ard: bool = False):
     time = get_timestring()
     if ard:
         if coregionalized:
-            model = build_coregionalized_model(X, y, kernel=ARD_WRAPPERS[kernel](X))
+            model = build_coregionalized_model(X, y, kernel=ARD_WRAPPERS[kernel](X.shape[1]))
         else:
-            model = build_model(X, y, kernel=ARD_WRAPPERS[kernel](X))
+            model = build_model(X, y, kernel=ARD_WRAPPERS[kernel](X.shape[1]))
     else:
         if coregionalized:
-            model = build_coregionalized_model(X, y, kernel=NO_ARD_WRAPPERS[kernel](X))
+            model = build_coregionalized_model(X, y, kernel=NO_ARD_WRAPPERS[kernel](X.shape[1]))
         else:
-            model = build_model(X, y, kernel=NO_ARD_WRAPPERS[kernel](X))
+            model = build_model(X, y, kernel=NO_ARD_WRAPPERS[kernel](X.shape[1]))
 
     result = loocv_train_test(model, X, y, coregionalized=coregionalized)
 
@@ -27,7 +28,9 @@ def loocv_pipe(kernel, X, y, coregionalized: bool = False, ard: bool = False):
 
 
 def run_loocv_from_file(file, features, labels, kernel, coregionalized, ard):
+    logger.info(f"Reading {file}")
     df = pd.read_csv(file)
     X = df[features].values
     y = df[labels].values
+    logger.info(f"Feature shape: {X.shape}, label shape {y.shape}")
     loocv_pipe(kernel, X, y, coregionalized, ard)
