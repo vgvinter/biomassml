@@ -12,23 +12,55 @@ __all__ = [
 ]
 
 
+ARD_WRAPPERS = {
+    "matern_32": lambda X: get_matern_32_kernel(X),
+    "matern_52": lambda X: get_matern_52_kernel(X),
+    "ratquad": lambda X: get_ratquad_kernel(X),
+    "linear": lambda X: get_linear_kernel(X),
+    "rbf": lambda X: get_rbf_kernel(X),
+    "matern_32_linear": lambda X: get_matern_32_kernel(X) * get_linear_kernel(X),
+    "matern_52_linear": lambda X: get_matern_32_kernel(X) * get_linear_kernel(X),
+    "ratquad_linear": lambda X: get_ratquad_kernel(X) * get_linear_kernel(X),
+    "rbf_linear": lambda X: get_rbf_kernel(X) * get_linear_kernel(X),
+}
+
+NO_ARD_WRAPPERS = {
+    "matern_32": lambda X: get_matern_32_kernel(X, ARD=False),
+    "matern_52": lambda X: get_matern_52_kernel(X, ARD=False),
+    "ratquad": lambda X: get_ratquad_kernel(X, ARD=False),
+    "linear": lambda X: get_linear_kernel(X, ARD=False),
+    "rbf": lambda X: get_rbf_kernel(X, ARD=False),
+    "matern_32_linear": lambda X: get_matern_32_kernel(X, ARD=False)
+    * get_linear_kernel(X, ARD=False),
+    "matern_52_linear": lambda X: get_matern_32_kernel(X, ARD=False)
+    * get_linear_kernel(X, ARD=False),
+    "ratquad_linear": lambda X: get_ratquad_kernel(X, ARD=False) * get_linear_kernel(X, ARD=False),
+    "rbf_linear": lambda X: get_rbf_kernel(X, ARD=False) * get_linear_kernel(X, ARD=False),
+}
+
+
+def get_rbf_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.Matern32:
+    """RBF kernel"""
+    return GPy.kern.RBF(NFEAT, ARD=ARD, **kwargs)
+
+
 def get_matern_32_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.Matern32:
-    """Matern-3/2 kernel without ARD"""
+    """Matern-3/2 kernel"""
     return GPy.kern.Matern32(NFEAT, ARD=ARD, **kwargs)
 
 
 def get_matern_52_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.Matern52:
-    """Matern-5/2 kernel without ARD"""
+    """Matern-5/2 kernel"""
     return GPy.kern.Matern52(NFEAT, ARD=ARD, **kwargs)
 
 
 def get_ratquad_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.RatQuad:
-    """Rational quadratic kernel without ARD"""
+    """Rational quadratic kernel"""
     return GPy.kern.RatQuad(NFEAT, ARD=ARD, **kwargs)
 
 
 def get_linear_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.Linear:
-    """Rational quadratic kernel without ARD"""
+    """Rational quadratic kernel"""
     return GPy.kern.Linear(NFEAT, ARD=ARD, **kwargs)
 
 
