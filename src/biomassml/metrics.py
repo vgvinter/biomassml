@@ -1,7 +1,10 @@
+from tabnanny import verbose
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, max_error
-from sklearn.model_selection import LOOCV
+from sklearn.model_selection import LeaveOneOut
+from sklearn.preprocessing import StandardScaler
 import numpy as np
 from scipy.stats import norm
+from loguru import logger
 from .predict import predict, predict_coregionalized
 
 __all__ = [
@@ -69,19 +72,30 @@ def negative_log_likelihood_Gaussian(y_true, y_mean, y_err):
     return nll
 
 
-def loocv_train_test(gp_model, X, y, coregionalized: bool = False):
+def loocv_train_test(gp_model, X, y, coregionalized: bool = False, n_restarts=20):
     """
     Perform Leave-One-Out cross-Validation on the model.
     """
     prediction_collection_train = []
     prediction_collection_test = []
-    for train_indices, test_indices in LOOCV().split(X):
+    for i, (train_indices, test_indices) in enumerate(LeaveOneOut().split(X)):
+        logger.info(f"LOOCV iteration {i}")
         X_train, X_test = X[train_indices], X[test_indices]
         y_train, y_test = y[train_indices], y[test_indices]
+
+        x_scaler = StandardScaler()
+        y_scaler = StandardScaler()
+
+        X_train = x_scaler.fit_transform(X_train)
+        X_test = x_scaler.transform(X_test)
+
+        y_train = y_scaler.fit_transform(y_train)
+        y_test = y_scaler.transform(y_test)
+
         predictions_train = {}
         predictions_test = {}
         if coregionalized:
-            gp_model.optimize_restarts(n_restarts=20)
+            gp_model.optimize_restarts(n_restarts, verbose=False)
 
             for objective in range(y.shape[1]):
                 y_pred_test_mu, y_pred_test_std = predict_coregionalized(
@@ -102,7 +116,7 @@ def loocv_train_test(gp_model, X, y, coregionalized: bool = False):
                 }
 
         else:
-            gp_model.optimize_restarts(n_restarts=20)
+            gp_model.optimize_restarts(n_restarts, verbose=False)
             y_pred_test_mu, y_pred_test_std = predict(gp_model, X_test)
             y_pred_train_mu, y_pred_train_std = predict(gp_model, X_train)
             for objective in range(y.shape[1]):
