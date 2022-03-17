@@ -1,4 +1,4 @@
-datafile: /Users/kevinmaikjablonka/git/kjappelbaum/biomassml/data/data_GASIF_biomass.csv
+datafile: ../../../data/data_GASIF_biomass.csv
 labels:
   - volCO (%)
   - volH2 (%)
@@ -21,3 +21,4 @@ features:
 kernel: rbf_linear
 coregionalized: true
 ard: true
+y_scramble: false

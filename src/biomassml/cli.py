@@ -12,4 +12,5 @@ def run_loocv(cfg: DictConfig):
         kernel=cfg.kernel,
         coregionalized=cfg.coregionalized,
         ard=cfg.ard,
+        y_scramble=cfg.y_scramble,
     )
