@@ -51,6 +51,8 @@ def loocv_pipe(
 
 def run_loocv_from_file(file, features, labels, kernel, coregionalized, ard, y_scramble):
     logger.info(f"Reading {file}")
+    logger.info(f"Features: {features}")
+    logger.info(f"Labels: {labels}")
     df = pd.read_csv(file)
     X = df[features].values
     y = df[labels].values

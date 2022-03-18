@@ -20,7 +20,24 @@ COLORS = [
     "#999999",
 ]
 
+# in centimeters
+ONE_COL_WIDTH = 8.3
+TWO_COL_WIDTH = 17.1
+
+
 __all__ = ["add_identity", "COLORS", "make_parity_plot", "set_plotstyle"]
+
+
+def cm2inch(*tupl):
+    inch = 2.54
+    if isinstance(tupl[0], tuple):
+        return tuple(i / inch for i in tupl[0])
+    else:
+        return tuple(i / inch for i in tupl)
+
+
+GOLDEN_RATIO_FIG_ONE_COL = cm2inch(ONE_COL_WIDTH, ONE_COL_WIDTH / 1.618)
+GOLDEN_RATIO_FIG_TWO_COL = cm2inch(TWO_COL_WIDTH, TWO_COL_WIDTH / 1.618)
 
 
 def radar_factory(num_vars, frame="circle"):
@@ -124,16 +141,15 @@ def add_identity(axes, *line_args, **line_kwargs):
     return axes
 
 
-def make_parity_plot(X, y, ax, **kwargs):
+def make_parity_plot(y_true, y_pred, ax, x_label="true", y_label="predicted", **kwargs):
     """
     X: (N, D)
     y: (N,)
     """
-    ax.scatter(X[:, 0], y, **kwargs)
+    ax.scatter(y_true, y_pred, **kwargs)
     add_identity(ax)
-    ax.set_xlabel("$x_1$")
-    ax.set_ylabel("$y$")
-    ax.set_title("Parity Plot")
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
     return ax
 
 
