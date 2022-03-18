@@ -141,13 +141,16 @@ def add_identity(axes, *line_args, **line_kwargs):
     return axes
 
 
-def make_parity_plot(y_true, y_pred, ax, x_label="true", y_label="predicted", **kwargs):
+def make_parity_plot(y_true, y_pred, ax, y_err=None, x_label="true", y_label="predicted", **kwargs):
     """
     X: (N, D)
     y: (N,)
     """
-    ax.scatter(y_true, y_pred, **kwargs)
-    add_identity(ax)
+    if y_err is None:
+        ax.scatter(y_true, y_pred, **kwargs)
+    else:
+        ax.errorbar(y_true, y_pred, yerr=y_err, **kwargs)
+    add_identity(ax, "--k")
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
     return ax
