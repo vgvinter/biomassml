@@ -15,11 +15,12 @@ def loocv_pipe(
     coregionalized: bool = False,
     ard: bool = False,
     y_scramble: bool = False,
+    tags: list = None,
 ):
     """
     Perform leave-one-out cross-validation on the given kernel.
     """
-    run = wandb.init(project="biomassml")
+    run = wandb.init(project="biomassml", tags=tags)
     run.config.update(
         {"kernel": kernel, "coregionalized": coregionalized, "ard": ard, "y_scramble": y_scramble}
     )

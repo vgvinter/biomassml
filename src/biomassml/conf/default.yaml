@@ -22,3 +22,4 @@ kernel: rbf_linear
 coregionalized: true
 ard: true
 y_scramble: false
+tags:
