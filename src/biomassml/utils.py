@@ -8,4 +8,4 @@ def get_timestring():
 
 def additive_errorprop(errors):
     """Asuming that we deal with standard deviations"""
-    return np.sqrt(np.sum(np.square(errors)))
+    return np.sqrt(np.sum(np.square(errors), axis=0))
