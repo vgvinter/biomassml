@@ -10,12 +10,15 @@ def predict_wrapper(model, X, index: int = 0, coregionalized: bool = False):
     return mu.flatten()
 
 
-def get_shap_values(model, X, index: int = 0, coregionalized: bool = False):
+def get_shap_values(model, X, index: int = 0, custom_wrapper=None, coregionalized: bool = False):
     """
     Get SHAP values for a given model and data.
     """
-    explainer = shap.KernelExplainer(
-        lambda X: predict_wrapper(model, X, index=index, coregionalized=coregionalized)
-    )
+    if custom_wrapper is None:
+        explainer = shap.KernelExplainer(
+            lambda X: predict_wrapper(model, X, index=index, coregionalized=coregionalized), X
+        )
+    else:
+        explainer = shap.KernelExplainer(lambda X: custom_wrapper(model, X), X)
     shap_values = explainer.shap_values(X)
     return shap_values
