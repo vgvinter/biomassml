@@ -160,6 +160,55 @@ def set_plotstyle():
     plt.style.reload_library()
     plt.style.use("science")
     rcParams["font.family"] = "sans-serif"
+    plt.rcParams["font.sans-serif"] = "Helvetica"
+
+
+def h_barplot(x, y, ax, y_err=None, color=COLORS[0]):
+
+    ax.hlines(y=x, xmin=0, xmax=y, color=color, alpha=0.2, linewidth=5)
+
+    # create for each expense type a dot at the level of the expense percentage value
+    ax.plot(y, x, "o", markersize=5, color=color, alpha=0.6)
+
+    if y_err is not None:
+        ax.errorbar(y, x, xerr=y_err, color=color, alpha=0.6)
+
+    # set axis
+    ax.tick_params(axis="both", which="major", labelsize=12)
+    # plt.yticks(x)
+
+    # change the style of the axis spines
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    ax.spines["left"].set_bounds((1, len(x)))
+
+    ax.spines["left"].set_position(("outward", 8))
+    ax.spines["bottom"].set_position(("outward", 5))
+
+
+def v_barplot(x, y, ax, y_err=None, color=COLORS[0]):
+
+    ax.vlines(x=x, y=y, color=color, alpha=0.2, linewidth=5)
+
+    # create for each expense type a dot at the level of the expense percentage value
+    ax.plot(x, y, "o", markersize=5, color=color, alpha=0.6)
+
+    if y_err is not None:
+        ax.errorbar(x, y, yerr=y_err, color=color, alpha=0.6)
+
+    # set axis
+    ax.tick_params(axis="both", which="major", labelsize=12)
+    # plt.yticks(x)
+
+    # change the style of the axis spines
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    ax.spines["bottom"].set_bounds((1, len(x)))
+
+    ax.spines["left"].set_position(("outward", 8))
+    ax.spines["bottom"].set_position(("outward", 5))
 
 
 def spider(data, labels, outname):
@@ -199,8 +248,9 @@ def spider(data, labels, outname):
     ax.set_title(title, position=(0.5, 1.1), ha="center")
     labels = ["filtered", "unfiltered"]
     for i, d in enumerate(case_data):
-        line = ax.plot(theta, d, c=COLORS[i])
-        ax.fill(theta, d, alpha=0.25, c=COLORS[i], edgecolor=COLORS[i], label=labels[i])
+        line = (ax.plot(theta, d),)  # c=COLORS[i])
+
+        ax.fill(theta, d, alpha=0.01)  # , c=COLORS[i], edgecolor=COLORS[i], label=labels[i])
     ax.set_varlabels(spoke_labels)
 
     fig.legend()
