@@ -189,26 +189,27 @@ def h_barplot(x, y, ax, y_err=None, color=COLORS[0]):
 
 def v_barplot(x, y, ax, y_err=None, color=COLORS[0]):
 
-    ax.vlines(x=x, y=y, color=color, alpha=0.2, linewidth=5)
+    ax.vlines(x=x, ymin=0, ymax=y, color=color, alpha=0.2, linewidth=5)
 
     # create for each expense type a dot at the level of the expense percentage value
-    ax.plot(x, y, "o", markersize=5, color=color, alpha=0.6)
+    ax.plot(x, y, "o", markersize=5, color=color, alpha=0.6, ls="")
 
     if y_err is not None:
-        ax.errorbar(x, y, yerr=y_err, color=color, alpha=0.6)
+        ax.errorbar(x, y, yerr=y_err, color=color, alpha=0.6, ls="")
 
     # set axis
-    ax.tick_params(axis="both", which="major", labelsize=12)
+    # ax.tick_params(axis="both", which="major", labelsize=12)
     # plt.yticks(x)
 
     # change the style of the axis spines
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
+    # ax.spines["left"].set_visible(False)
 
-    ax.spines["bottom"].set_bounds((1, len(x)))
+    ax.spines["bottom"].set_bounds((0, len(x)))
 
-    ax.spines["left"].set_position(("outward", 8))
-    ax.spines["bottom"].set_position(("outward", 5))
+    # ax.spines["left"].set_position(("outward", 0))
+    # ax.spines["bottom"].set_position(("outward", 5))
 
 
 def spider(data, labels, outname):
