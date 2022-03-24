@@ -19,7 +19,7 @@ ARD_WRAPPERS = {
     "linear": lambda X: get_linear_kernel(X),
     "rbf": lambda X: get_rbf_kernel(X),
     "matern_32_linear": lambda X: get_matern_32_kernel(X) * get_linear_kernel(X),
-    "matern_52_linear": lambda X: get_matern_32_kernel(X) * get_linear_kernel(X),
+    "matern_52_linear": lambda X: get_matern_52_kernel(X) * get_linear_kernel(X),
     "ratquad_linear": lambda X: get_ratquad_kernel(X) * get_linear_kernel(X),
     "rbf_linear": lambda X: get_rbf_kernel(X) * get_linear_kernel(X),
 }
@@ -32,14 +32,14 @@ NO_ARD_WRAPPERS = {
     "rbf": lambda X: get_rbf_kernel(X, ARD=False),
     "matern_32_linear": lambda X: get_matern_32_kernel(X, ARD=False)
     * get_linear_kernel(X, ARD=False),
-    "matern_52_linear": lambda X: get_matern_32_kernel(X, ARD=False)
+    "matern_52_linear": lambda X: get_matern_52_kernel(X, ARD=False)
     * get_linear_kernel(X, ARD=False),
     "ratquad_linear": lambda X: get_ratquad_kernel(X, ARD=False) * get_linear_kernel(X, ARD=False),
     "rbf_linear": lambda X: get_rbf_kernel(X, ARD=False) * get_linear_kernel(X, ARD=False),
 }
 
 
-def get_rbf_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.Matern32:
+def get_rbf_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.RBF:
     """RBF kernel"""
     return GPy.kern.RBF(NFEAT, ARD=ARD, **kwargs)
 
