@@ -118,11 +118,11 @@ def loocv_train_test(gp_model, X, y, coregionalized: bool = False, n_restarts=20
                 }
 
         else:
-            gp_model.set_XY(X_train, y_train)
-            gp_model.optimize_restarts(n_restarts, verbose=False)
-            y_pred_test_mu, y_pred_test_std = predict(gp_model, X_test)
-            y_pred_train_mu, y_pred_train_std = predict(gp_model, X_train)
             for objective in range(y.shape[1]):
+                gp_model.set_XY(X_train, y_train[:, objective].reshape(-1, 1))
+                gp_model.optimize_restarts(n_restarts, verbose=False)
+                y_pred_test_mu, y_pred_test_std = predict(gp_model, X_test)
+                y_pred_train_mu, y_pred_train_std = predict(gp_model, X_train)
                 predictions_train[objective] = {
                     "mu": y_pred_train_mu,
                     "std": y_pred_train_std,
@@ -131,7 +131,7 @@ def loocv_train_test(gp_model, X, y, coregionalized: bool = False, n_restarts=20
                 predictions_test[objective] = {
                     "mu": y_pred_test_mu,
                     "std": y_pred_test_std,
-                    "true": y_train[:, objective],
+                    "true": y_test[:, objective],
                 }
         prediction_collection_train.append(predictions_train)
         prediction_collection_test.append(predictions_test)

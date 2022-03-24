@@ -1,0 +1,8 @@
+# @package _global_
+
+labels:
+  - volCO (%)
+  - volH2 (%)
+  - volCH4 (%)
+tags:
+  - methane

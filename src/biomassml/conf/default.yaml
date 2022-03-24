@@ -1,0 +1,25 @@
+datafile: ../../../data/data_GASIF_biomass.csv
+labels:
+  - volCO (%)
+  - volH2 (%)
+  - volCOMB (%)
+features:
+  - SA
+  - SBR
+  - HHVbiom (MJ/kg)
+  - T (K)
+  - SR
+  - He_density (g/cm3)
+  - C (%)
+  - N (%)
+  - H (%)
+  - S (%)
+  - O (%)
+  - ash (%)
+  - VM (%)
+  - FC (%)
+kernel: rbf_linear
+coregionalized: true
+ard: true
+y_scramble: false
+tags:

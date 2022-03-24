@@ -20,7 +20,24 @@ COLORS = [
     "#999999",
 ]
 
+# in centimeters
+ONE_COL_WIDTH = 8.3
+TWO_COL_WIDTH = 17.1
+
+
 __all__ = ["add_identity", "COLORS", "make_parity_plot", "set_plotstyle"]
+
+
+def cm2inch(*tupl):
+    inch = 2.54
+    if isinstance(tupl[0], tuple):
+        return tuple(i / inch for i in tupl[0])
+    else:
+        return tuple(i / inch for i in tupl)
+
+
+GOLDEN_RATIO_FIG_ONE_COL = cm2inch(ONE_COL_WIDTH, ONE_COL_WIDTH / 1.618)
+GOLDEN_RATIO_FIG_TWO_COL = cm2inch(TWO_COL_WIDTH, TWO_COL_WIDTH / 1.618)
 
 
 def radar_factory(num_vars, frame="circle"):
@@ -124,16 +141,18 @@ def add_identity(axes, *line_args, **line_kwargs):
     return axes
 
 
-def make_parity_plot(X, y, ax, **kwargs):
+def make_parity_plot(y_true, y_pred, ax, y_err=None, x_label="true", y_label="predicted", **kwargs):
     """
     X: (N, D)
     y: (N,)
     """
-    ax.scatter(X[:, 0], y, **kwargs)
-    add_identity(ax)
-    ax.set_xlabel("$x_1$")
-    ax.set_ylabel("$y$")
-    ax.set_title("Parity Plot")
+    if y_err is None:
+        ax.scatter(y_true, y_pred, **kwargs)
+    else:
+        ax.errorbar(y_true, y_pred, yerr=y_err, **kwargs)
+    add_identity(ax, "--k")
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
     return ax
 
 
@@ -141,6 +160,56 @@ def set_plotstyle():
     plt.style.reload_library()
     plt.style.use("science")
     rcParams["font.family"] = "sans-serif"
+    plt.rcParams["font.sans-serif"] = "Helvetica"
+
+
+def h_barplot(x, y, ax, y_err=None, color=COLORS[0]):
+
+    ax.hlines(y=x, xmin=0, xmax=y, color=color, alpha=0.2, linewidth=5)
+
+    # create for each expense type a dot at the level of the expense percentage value
+    ax.plot(y, x, "o", markersize=5, color=color, alpha=0.6)
+
+    if y_err is not None:
+        ax.errorbar(y, x, xerr=y_err, color=color, alpha=0.6)
+
+    # set axis
+    ax.tick_params(axis="both", which="major", labelsize=12)
+    # plt.yticks(x)
+
+    # change the style of the axis spines
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    ax.spines["left"].set_bounds((1, len(x)))
+
+    ax.spines["left"].set_position(("outward", 8))
+    ax.spines["bottom"].set_position(("outward", 5))
+
+
+def v_barplot(x, y, ax, y_err=None, color=COLORS[0]):
+
+    ax.vlines(x=x, ymin=0, ymax=y, color=color, alpha=0.2, linewidth=5)
+
+    # create for each expense type a dot at the level of the expense percentage value
+    ax.plot(x, y, "o", markersize=5, color=color, alpha=0.6, ls="")
+
+    if y_err is not None:
+        ax.errorbar(x, y, yerr=y_err, color=color, alpha=0.6, ls="")
+
+    # set axis
+    # ax.tick_params(axis="both", which="major", labelsize=12)
+    # plt.yticks(x)
+
+    # change the style of the axis spines
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    # ax.spines["left"].set_visible(False)
+
+    ax.spines["bottom"].set_bounds((0, len(x)))
+
+    # ax.spines["left"].set_position(("outward", 0))
+    # ax.spines["bottom"].set_position(("outward", 5))
 
 
 def spider(data, labels, outname):
@@ -180,8 +249,9 @@ def spider(data, labels, outname):
     ax.set_title(title, position=(0.5, 1.1), ha="center")
     labels = ["filtered", "unfiltered"]
     for i, d in enumerate(case_data):
-        line = ax.plot(theta, d, c=COLORS[i])
-        ax.fill(theta, d, alpha=0.25, c=COLORS[i], edgecolor=COLORS[i], label=labels[i])
+        line = (ax.plot(theta, d),)  # c=COLORS[i])
+
+        ax.fill(theta, d, alpha=0.01)  # , c=COLORS[i], edgecolor=COLORS[i], label=labels[i])
     ax.set_varlabels(spoke_labels)
 
     fig.legend()
