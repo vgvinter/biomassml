@@ -3,12 +3,14 @@ import numpy as np
 from .coregionalized_regressor import GPCoregionalizedRegression
 
 __all__ = [
+    "get_rbf_kernel",
     "get_matern_32_kernel",
     "get_matern_52_kernel",
     "get_ratquad_kernel",
     "get_linear_kernel",
     "build_coregionalized_model",
     "build_model",
+    "set_xy_coregionalized",
 ]
 
 
