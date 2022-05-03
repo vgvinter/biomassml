@@ -8,6 +8,8 @@ __all__ = [
     "get_matern_52_kernel",
     "get_ratquad_kernel",
     "get_linear_kernel",
+    "get_exponential_kernel",
+    "get_expquad_kernel",
     "build_coregionalized_model",
     "build_model",
     "set_xy_coregionalized",
@@ -42,7 +44,7 @@ NO_ARD_WRAPPERS = {
 
 
 def get_rbf_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.RBF:
-    """RBF kernel"""
+    """Radial basis function kernel"""
     return GPy.kern.RBF(NFEAT, ARD=ARD, **kwargs)
 
 
@@ -62,8 +64,18 @@ def get_ratquad_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.RatQuad:
 
 
 def get_linear_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.Linear:
-    """Rational quadratic kernel"""
+    """Linear kernel"""
     return GPy.kern.Linear(NFEAT, ARD=ARD, **kwargs)
+
+
+def get_exponential_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.Exponential:
+    """Exponential kernel"""
+    return GPy.kern.Exponential(NFEAT, ARD=ARD, **kwargs)
+
+
+def get_expquad_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.ExpQuad:
+    '''Exponentiated Quadratic kernel'''
+    return GPy.kern.ExpQuad(NFEAT, ARD=ARD, **kwargs)
 
 
 def build_coregionalized_model(
