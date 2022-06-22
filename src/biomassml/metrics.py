@@ -29,21 +29,22 @@ def get_regression_metrics(y_true, y_pred) -> dict:
     }
 
 
-def picp(y_true, y_err):
+def picp(y_true, y_mean, y_err):
     """
     Based on UQ360 implementation
     Prediction Interval Coverage Probability (PICP). Computes the fraction of samples for which the grounds truth lies
     within predicted interval. Measures the prediction interval calibration for regression.
     Args:
         y_true: Ground truth
+        y_mean: predicted mean
         y_err: predicted uncertainty
     Returns:
         float: the fraction of samples for which the grounds truth lies within predicted interval
     """
-    y_upper = y_true + y_err
-    y_lower = y_true - y_err
-    satisfies_upper_bound = y_true <= y_upper
-    satisfies_lower_bound = y_true >= y_lower
+    y_upper = y_mean.squeeze() + y_err.squeeze()
+    y_lower = y_mean.squeeze() - y_err.squeeze()
+    satisfies_upper_bound = y_true.squeeze() <= y_upper
+    satisfies_lower_bound = y_true.squeeze() >= y_lower
     return np.mean(satisfies_upper_bound * satisfies_lower_bound)
 
 
@@ -57,7 +58,7 @@ def mpiw(y_err):
     Returns:
         float: the average width of the prediction interval across samples
     """
-    return np.mean(np.abs(y_err))
+    return np.mean(np.abs(2*y_err.squeeze()))
 
 
 def negative_log_likelihood_Gaussian(y_true, y_mean, y_err):
@@ -148,7 +149,7 @@ def loocv_train_test(gp_model, X, y, coregionalized: bool = False, n_restarts=20
         y_err = y_pred_std
         test_metrics[objective] = {
             "nll": negative_log_likelihood_Gaussian(y_true, y_pred_mu, y_err),
-            "picp": picp(y_true, y_err),
+            "picp": picp(y_true, y_pred_mu, y_err),
             "mpiw": mpiw(y_err),
             **get_regression_metrics(y_true, y_pred_mu),
         }
