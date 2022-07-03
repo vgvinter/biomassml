@@ -24,7 +24,7 @@ def get_shap_values(model, X, index: int = 0, custom_wrapper=None, coregionalize
     shap_values = explainer.shap_values(X)
     return shap_values
 
-'''
+
 class GPYEstimator:
     """Helper to mimic the interface of sklearn.base.BaseEstimator for partial dependency plots
     X: X_scaled
@@ -62,6 +62,5 @@ class GPYMethaneEstimator:
             - predict_coregionalized(self.model, X, 0)[0].flatten()
             - predict_coregionalized(self.model, X, 1)[0].flatten()
         )
-    """
 
 
