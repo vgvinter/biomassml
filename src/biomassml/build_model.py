@@ -8,8 +8,6 @@ __all__ = [
     "get_matern_52_kernel",
     "get_ratquad_kernel",
     "get_linear_kernel",
-    "get_exponential_kernel",
-    "get_expquad_kernel",
     "build_coregionalized_model",
     "build_model",
     "set_xy_coregionalized",
@@ -22,10 +20,14 @@ ARD_WRAPPERS = {
     "ratquad": lambda X: get_ratquad_kernel(X),
     "linear": lambda X: get_linear_kernel(X),
     "rbf": lambda X: get_rbf_kernel(X),
+    "rbf_plus_linear": lambda X: get_rbf_kernel(X) + get_linear_kernel(X),
+    "matern_32_plus_linear": lambda X: get_matern_32_kernel(X) + get_linear_kernel(X),
+    "matern_52_plus_linear": lambda X: get_matern_52_kernel(X) + get_linear_kernel(X),
+    "ratquad_plus_linear": lambda X: get_ratquad_kernel(X) + get_linear_kernel(X),
+    "rbf_linear": lambda X: get_rbf_kernel(X) * get_linear_kernel(X),
     "matern_32_linear": lambda X: get_matern_32_kernel(X) * get_linear_kernel(X),
     "matern_52_linear": lambda X: get_matern_52_kernel(X) * get_linear_kernel(X),
     "ratquad_linear": lambda X: get_ratquad_kernel(X) * get_linear_kernel(X),
-    "rbf_linear": lambda X: get_rbf_kernel(X) * get_linear_kernel(X),
 }
 
 NO_ARD_WRAPPERS = {
@@ -34,12 +36,19 @@ NO_ARD_WRAPPERS = {
     "ratquad": lambda X: get_ratquad_kernel(X, ARD=False),
     "linear": lambda X: get_linear_kernel(X, ARD=False),
     "rbf": lambda X: get_rbf_kernel(X, ARD=False),
+    "rbf_plus_linear": lambda X: get_rbf_kernel(X, ARD=False) + get_linear_kernel(X, ARD=False),
+    "matern_32_plus_linear": lambda X: get_matern_32_kernel(X, ARD=False) 
+    + get_linear_kernel(X, ARD=False),
+    "matern_52_plus_linear": lambda X: get_matern_52_kernel(X, ARD=False) 
+    + get_linear_kernel(X, ARD=False),
+    "ratquad_plus_linear": lambda X: get_ratquad_kernel(X, ARD=False)
+    + get_linear_kernel(X, ARD=False),
+    "rbf_linear": lambda X: get_rbf_kernel(X, ARD=False) * get_linear_kernel(X, ARD=False),
     "matern_32_linear": lambda X: get_matern_32_kernel(X, ARD=False)
     * get_linear_kernel(X, ARD=False),
     "matern_52_linear": lambda X: get_matern_52_kernel(X, ARD=False)
     * get_linear_kernel(X, ARD=False),
     "ratquad_linear": lambda X: get_ratquad_kernel(X, ARD=False) * get_linear_kernel(X, ARD=False),
-    "rbf_linear": lambda X: get_rbf_kernel(X, ARD=False) * get_linear_kernel(X, ARD=False),
 }
 
 
@@ -66,16 +75,6 @@ def get_ratquad_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.RatQuad:
 def get_linear_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.Linear:
     """Linear kernel"""
     return GPy.kern.Linear(NFEAT, ARD=ARD, **kwargs)
-
-
-def get_exponential_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.Exponential:
-    """Exponential kernel"""
-    return GPy.kern.Exponential(NFEAT, ARD=ARD, **kwargs)
-
-
-def get_expquad_kernel(NFEAT: int, ARD=True, **kwargs) -> GPy.kern.ExpQuad:
-    '''Exponentiated Quadratic kernel'''
-    return GPy.kern.ExpQuad(NFEAT, ARD=ARD, **kwargs)
 
 
 def build_coregionalized_model(
