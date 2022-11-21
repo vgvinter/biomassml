@@ -8,7 +8,7 @@ from .utils import additive_errorprop
 def get_scalers(X, y):
     """It returns x_scaler and y_scaler
     X: FEATURES_GASIF
-    y: TARGETS_GASIF = CO, H2, COMB
+    y: TARGETS_GASIF = CO, H2, COMB, GAS
     """
     x_scaler = StandardScaler()
     y_scaler = StandardScaler()
