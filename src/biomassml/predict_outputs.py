@@ -8,15 +8,14 @@ from .utils import additive_errorprop
 def get_scalers(X, y):
     """It returns x_scaler and y_scaler
     X: FEATURES_GASIF
-    y: TARGETS_GASIF = CO, H2, COMB
+    y: TARGETS_GASIF = CO, H2, COMB, GAS
     """
     x_scaler = StandardScaler()
     y_scaler = StandardScaler()
     X_scaled = x_scaler.fit_transform(X)
     y_scaled = y_scaler.fit_transform(y)
     return x_scaler, y_scaler
-
-
+c
 def predict_CO(X, model, x_scaler, y_scaler):
     """It returns unscaled predictions
     y_scaler: y scaler for TARGETS_GASIF = CO, H2, COMB, GAS
