@@ -76,7 +76,7 @@ def predict_CH4(X, model, x_scaler, y_scaler):
 
 def predict_CH4_covar(X, y, model, x_scaler, y_scaler):
     """It returns unscaled predictions considering covariance in the calculation of the error propagation
-    y_scaler: y scaler for TARGETS_GASIF = CO, H2, COMB, GAS, CH4
+    y_scaler: y scaler for TARGETS_GASIF = CO, H2, COMB, GAS
     """
     X_scaled = x_scaler.transform(X)
     y_pred_mu_CO = predict_coregionalized(model, X_scaled, 0)[0]*sqrt(y_scaler.var_[0]) + y_scaler.mean_[0]
