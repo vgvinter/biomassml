@@ -38,12 +38,11 @@ def picp(y_true, y_mean, y_err):
         y_true: Ground truth
         y_mean: predicted mean
         y_err: predicted uncertainty
-        n: t-value corresponding to the calculated confidence interval
     Returns:
         float: the fraction of samples for which the grounds truth lies within predicted interval
     """
-    y_upper = y_mean.squeeze() + n*y_err.squeeze()
-    y_lower = y_mean.squeeze() - n*y_err.squeeze()
+    y_upper = y_mean.squeeze() + 2.045*y_err.squeeze()
+    y_lower = y_mean.squeeze() - 2.045*y_err.squeeze()
     satisfies_upper_bound = y_true.squeeze() <= y_upper
     satisfies_lower_bound = y_true.squeeze() >= y_lower
     return np.mean(satisfies_upper_bound * satisfies_lower_bound)
@@ -56,11 +55,10 @@ def mpiw(y_err):
     sharpness of intervals.
     Args:
         y_err: predicted uncertainty
-        n: t-value corresponding to the calculated confidence interval
     Returns:
         float: the average width of the prediction interval across samples
     """
-    return np.mean(np.abs(n*2*y_err.squeeze()))
+    return np.mean(np.abs(2.045*2*y_err.squeeze()))
 
 
 def negative_log_likelihood_Gaussian(y_true, y_mean, y_err):
