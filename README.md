@@ -32,7 +32,7 @@
     </a>
 </p>
 
-Predicting gasification properties of biomasses
+Predicting gasification results for biomasses
 
 ## 💪 Getting Started
 
