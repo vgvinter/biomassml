@@ -1,5 +1,6 @@
 import shap
 from numpy import sqrt
+from sklearn.inspection import PartialDependenceDisplay
 from .predict import predict_coregionalized, predict
 
 
