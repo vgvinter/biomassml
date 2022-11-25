@@ -6,8 +6,8 @@
     "cookiecutter": {
       "package_name": "biomassml",
       "package_name_stylized": "biomassml",
-      "short_description": "Predicting gasification properties of biomasses",
-      "author_name": "Victoria Gill, Kevin Maik Jablonka",
+      "short_description": "Predicting gasification results for biomasses",
+      "author_name": "Maria Victoria Gil, Kevin Maik Jablonka",
       "author_email": "mail@kjablonka.com",
       "github_organization_name": "kjappelbaum",
       "github_repository_name": "biomassml",
