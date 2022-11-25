@@ -9,15 +9,13 @@ features:
   - HHVbiom (MJ/kg)
   - T (K)
   - SR
-  - He_density (g/cm3)
   - C (%)
-  - N (%)
   - H (%)
-  - S (%)
   - O (%)
   - ash (%)
   - VM (%)
   - FC (%)
+  - MC (%)
 kernel: rbf_linear
 coregionalized: true
 ard: true
