@@ -16,6 +16,7 @@ def get_scalers(X, y):
     y_scaled = y_scaler.fit_transform(y)
     return x_scaler, y_scaler
 
+
 def predict_CO(X, model, x_scaler, y_scaler):
     """It returns unscaled predictions
     y_scaler: y scaler for TARGETS_GASIF = CO, H2, COMB, GAS
@@ -95,6 +96,26 @@ def predict_CH4_covar(X, y, model, x_scaler, y_scaler):
                                        axis=0).flatten() - 2*cov1 - 2*cov2 + 2*cov3)
 
     return y_pred_mu_CH4, y_pred_std_CH4_covar
+
+
+def predict_HHV(X, model, x_scaler, y_scaler):
+    """It returns unscaled predictions
+    y_scaler: y scaler for TARGETS_GASIF = CO, H2, COMB, GAS
+    """
+    X_scaled = x_scaler.transform(X)
+    y_pred_mu_CO = predict_coregionalized(model, X_scaled, 0)[0]*sqrt(y_scaler.var_[0]) + y_scaler.mean_[0]
+    y_pred_std_CO = predict_coregionalized(model, X_scaled, 0)[1]*sqrt(y_scaler.var_[0])
+    y_pred_mu_H2 = predict_coregionalized(model, X_scaled, 1)[0]*sqrt(y_scaler.var_[1]) + y_scaler.mean_[1]
+    y_pred_std_H2 = predict_coregionalized(model, X_scaled, 1)[1]*sqrt(y_scaler.var_[1])
+    y_pred_mu_COMB = predict_coregionalized(model, X_scaled, 2)[0]*sqrt(y_scaler.var_[2]) + y_scaler.mean_[2]
+    y_pred_std_COMB = predict_coregionalized(model, X_scaled, 2)[1]*sqrt(y_scaler.var_[2])
+    y_pred_mu_CH4 = y_pred_mu_COMB - y_pred_mu_CO - y_pred_mu_H2
+    y_pred_std_CH4 = additive_errorprop([y_pred_std_COMB, y_pred_std_CO, y_pred_std_H2])
+    
+    y_pred_mu_HHV = (11.76*y_pred_mu_CO + 11.882*y_pred_mu_H2 + 37.024*y_pred_mu_CH4)/100
+    y_pred_std_HHV = additive_errorprop([11.76/100*y_pred_std_CO, 11.882/100*y_pred_std_H2, 37.024/100*y_pred_std_CH4])
+
+    return y_pred_mu_HHV, y_pred_std_HHV
 
 
 def predict_H2CO(X, model, x_scaler, y_scaler):
