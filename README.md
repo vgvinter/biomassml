@@ -30,6 +30,7 @@
     <a href='https://github.com/psf/black'>
         <img src='https://img.shields.io/badge/code%20style-black-000000.svg' alt='Code style: black' />
     </a>
+    [![DOI](https://zenodo.org/badge/455565709.svg)](https://zenodo.org/badge/latestdoi/455565709)
 </p>
 
 Predicting gasification results for biomasses
