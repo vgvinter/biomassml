@@ -11,12 +11,12 @@ The most recent code and data can be installed directly from GitHub with:
 
 .. code-block:: shell
 
-    $ pip install git+https://github.com/kjappelbaum/biomassml.git
+    $ pip install git+https://github.com/vgvinter/biomassml.git
 
 To install in development mode, use the following:
 
 .. code-block:: shell
 
-    $ git clone git+https://github.com/kjappelbaum/biomassml.git
+    $ git clone git+https://github.com/vgvinter/biomassml.git
     $ cd biomassml
     $ pip install -e .
