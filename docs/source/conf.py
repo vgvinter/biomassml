@@ -23,8 +23,8 @@ sys.path.insert(0, os.path.abspath('../../src'))
 # -- Project information -----------------------------------------------------
 
 project = 'biomassml'
-copyright = f'{date.today().year}, Victoria Gil, Kevin Maik Jablonka'
-author = 'Victoria Gil, Kevin Maik Jablonka'
+copyright = f'{date.today().year}, María Victoria Gil, Kevin Maik Jablonka'
+author = 'María Victoria Gil, Kevin Maik Jablonka'
 
 # The full version, including alpha/beta/rc tags.
 release = "0.0.1-dev"
@@ -197,8 +197,8 @@ texinfo_documents = [
         'biomassml',
         'biomassml Documentation',
         author,
-        'Victoria Gill, Kevin Maik Jablonka',
-        'Predicting gasification properties of biomasses',
+        'María Victoria Gil, Kevin Maik Jablonka',
+        'Predicting gasification results for biomasses',
         'Miscellaneous',
     ),
 ]
