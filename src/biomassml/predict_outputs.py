@@ -137,6 +137,9 @@ def predict_CH4_covar(X, y, model, x_scaler, y_scaler):
 def predict_HHV(X, model, x_scaler, y_scaler):
     """It returns unscaled predictions
     y_scaler: y scaler for TARGETS_GASIF = CO, H2, COMB, GAS
+
+    HHV is calculated as a function of the CO, H2 and CH4 concentrations following the
+    AENOR UNE-EN ISO 6976 standard
     """
     X_scaled = x_scaler.transform(X)
     y_pred_mu_CO = (
