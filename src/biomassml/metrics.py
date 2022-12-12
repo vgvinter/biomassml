@@ -1,4 +1,3 @@
-from tabnanny import verbose
 from sklearn.metrics import (
     mean_squared_error,
     r2_score,
@@ -38,8 +37,10 @@ def get_regression_metrics(y_true, y_pred) -> dict:
 def picp(y_true, y_mean, y_err):
     """
     Based on UQ360 implementation
+
     Prediction Interval Coverage Probability (PICP). Computes the fraction of samples for which the grounds truth lies
     within predicted interval. Measures the prediction interval calibration for regression.
+    
     Args:
         y_true: Ground truth
         y_mean: predicted mean
@@ -57,8 +58,10 @@ def picp(y_true, y_mean, y_err):
 def mpiw(y_err):
     """
     Based on UQ360 implementation
+
     Mean Prediction Interval Width (MPIW). Computes the average width of the prediction intervals. Measures the
     sharpness of intervals.
+
     Args:
         y_err: predicted uncertainty
     Returns:
@@ -70,7 +73,9 @@ def mpiw(y_err):
 def negative_log_likelihood_Gaussian(y_true, y_mean, y_err):
     """
     Based on UQ360 implementation
+
     Computes Gaussian negative_log_likelihood assuming symmetric band around the mean.
+    
     Args:
         y_true: Ground truth
         y_mean: predicted mean
