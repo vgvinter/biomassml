@@ -48,6 +48,8 @@ def picp(y_true, y_mean, y_err):
     Returns:
         float: the fraction of samples for which the grounds truth lies within 95% predicted interval
     """
+    # y_upper and y_lower represent the upper and lower bounds, respectively, of the 95% confidence interval 
+    # of the predicted distribution calculated from the t-distribution table and the sample size (t-value = 2.045) 
     y_upper = y_mean.squeeze() + 2.045 * y_err.squeeze()
     y_lower = y_mean.squeeze() - 2.045 * y_err.squeeze()
     satisfies_upper_bound = y_true.squeeze() <= y_upper
@@ -65,7 +67,8 @@ def mpiw(y_err):
     Args:
         y_err: predicted uncertainty
     Returns:
-        float: the average width of the 95% prediction interval across samples
+        float: the average width of the 95% prediction interval across samples (calculated from the
+        t-distribution table and the sample size, which means t-value = 2.045)
     """
     return np.mean(np.abs(2.045 * 2 * y_err.squeeze()))
 
