@@ -39,7 +39,7 @@ def picp(y_true, y_mean, y_err):
         y_mean: predicted mean
         y_err: predicted uncertainty
     Returns:
-        float: the fraction of samples for which the grounds truth lies within predicted interval
+        float: the fraction of samples for which the grounds truth lies within 95% predicted interval
     """
     y_upper = y_mean.squeeze() + 2.045*y_err.squeeze()
     y_lower = y_mean.squeeze() - 2.045*y_err.squeeze()
@@ -56,7 +56,7 @@ def mpiw(y_err):
     Args:
         y_err: predicted uncertainty
     Returns:
-        float: the average width of the prediction interval across samples
+        float: the average width of the 95% prediction interval across samples
     """
     return np.mean(np.abs(2.045*2*y_err.squeeze()))
 
