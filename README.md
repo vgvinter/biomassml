@@ -39,6 +39,8 @@ Predicting gasification results for biomasses.
 
 biomassml allows you to predict gasification results for biomass samples as a function of the biomass properties and the process operating conditions.
 
+This approach aims to be used for optimizing biomass utilization in the gasification process. It allows you to identify promising gasification pathways for biomasses, and to find optimal process operating conditions.
+
 > TODO show in a very small amount of space the **MOST** useful thing your package can do.
 Make it as short as possible! You have an entire set of docs for later.
 
@@ -89,13 +91,13 @@ The data for the new biomasses used in this work to predict gasification results
 
 ### Training
 
-The code to build the Gaussian Processes Regression (GPR) models used in this work can be found in `src/biomassml/build_model.py`. Code to build single-output GPR and coregionalized GPR models is included. The default configuration for training can be found in `src/biomassml/conf/default.yaml`.
+The code to build the Gaussian Process Regression (GPR) models used in this work can be found in `src/biomassml/build_model.py`. Code to build single-output GPR and coregionalized GPR models is included.
 
 Helper functions to perform leave-one-out cross-validation (LOOCV) on the model and to calculate metrics can be found in `src/biomassml/metrics.py`. Functions to perform LOOCV on a given kernel can be found in `src/biomassml/pipeline.py`.
 
 ### Feature importance
 
-The command-line-tools for the analysis of the feature importance can be found in `src/biomassml/feature_importance.py`, including partial dependency plots and SHAP analysis.`
+The code for the analysis of the feature importance can be found in `src/biomassml/feature_importance.py`, including partial dependency plots and SHapley Additive exPlanations (SHAP) analysis.`
 
 ### Predictions
 
@@ -103,11 +105,11 @@ The code to predict outputs can be found in `src/biomassml/predict_outputs.py`. 
 
 ### Trained models
 
-We provide the Gaussian Processes Regression (GPR) models trained in this work in the `models` directory. The model trained using leave-one-out cross-validation (LOOCV) can be found in `models/model_GPR_loocv`. The model retrained on all data can be found in `models/model_GPR_retrained`.
+We provide the Gaussian Process Regression (GPR) models trained in this work in the `models` directory. The model trained using leave-one-out cross-validation (LOOCV) can be found in `models/model_GPR_loocv`. The model retrained on all data can be found in `models/model_GPR_retrained`.
 
 ### Example usage
 
-The use of the main functions of this package is shown in Jupyter Notebooks in the `notebooks` directory. The training of the Gaussian Processes Regression (GPR) models used in this work can be found in `notebooks/train_GPR_model.ipynb`. The analysis of the feature importance can be found in `notebooks/feature_importance.ipynb`. The prediction of the gasification results for different biomasses from the literature can be found in `notebooks/predictions_new_dataset.ipynb`. The cluster analysis can be found in `notebooks/cluster_analysis.ipynb`.
+The use of the main functions of this package is shown in Jupyter Notebooks in the `notebooks` directory. The training of the Gaussian Process Regression (GPR) models used in this work and their performance evaluation can be found in `notebooks/train_GPR_model.ipynb`. The analysis of the feature importance can be found in `notebooks/feature_importance.ipynb`. The prediction of the gasification results for different biomasses from the literature, together with the optimization of the process operating conditions, can be found in `notebooks/predictions_new_dataset.ipynb`. The cluster analysis can be found in `notebooks/cluster_analysis.ipynb`.
 
 ## 👐 Contributing
 
@@ -118,7 +120,7 @@ Contributions, whether filing an issue, making a pull request, or forking, are a
 
 ### ⚖️ License
 
-The code in this package is licensed under the MIT License.
+The code in this package is licensed under the [MIT License](https://github.com/vgvinter/biomassml/blob/main/LICENSE).
 
 <!--
 ### 📖 Citation
