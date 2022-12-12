@@ -37,7 +37,7 @@ Predicting gasification results for biomasses.
 
 ## 💪 Getting Started
 
-biomassml allows you to predict gasification results for biomass samples as a function of the biomass properties and the process operating conditions
+biomassml allows you to predict gasification results for biomass samples as a function of the biomass properties and the process operating conditions.
 
 > TODO show in a very small amount of space the **MOST** useful thing your package can do.
 Make it as short as possible! You have an entire set of docs for later.
@@ -79,7 +79,7 @@ $ cd biomassml
 $ pip install -e .
 ```
 
-## :page_facing_up: Description
+## :memo: :pencil: Description
 
 ### Datasets
 
