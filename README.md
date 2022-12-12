@@ -135,9 +135,12 @@ This project has been supported by the following organizations (in alphabetical 
 
 -->
 
-<!--
+
 ### 💰 Funding
 
+This work was carried out with financial support from the Spanish Agencia Estatal de Investigación (AEI) through Grant TED2021-131693B-I00 funded by MCIN/AEI/ 10.13039/501100011033 and by the “European Union NextGenerationEU/PRTR”, and from the Spanish National Research Council (CSIC) through Programme for internationalization i-LINK 2021 (Project LINKA20412).
+
+<!--
 This project has been supported by the following grants:
 
 | Funding Body                                             | Program                                                                                                                       | Grant           |
