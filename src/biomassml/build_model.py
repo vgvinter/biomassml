@@ -37,9 +37,9 @@ NO_ARD_WRAPPERS = {
     "linear": lambda X: get_linear_kernel(X, ARD=False),
     "rbf": lambda X: get_rbf_kernel(X, ARD=False),
     "rbf_plus_linear": lambda X: get_rbf_kernel(X, ARD=False) + get_linear_kernel(X, ARD=False),
-    "matern_32_plus_linear": lambda X: get_matern_32_kernel(X, ARD=False) 
+    "matern_32_plus_linear": lambda X: get_matern_32_kernel(X, ARD=False)
     + get_linear_kernel(X, ARD=False),
-    "matern_52_plus_linear": lambda X: get_matern_52_kernel(X, ARD=False) 
+    "matern_52_plus_linear": lambda X: get_matern_52_kernel(X, ARD=False)
     + get_linear_kernel(X, ARD=False),
     "ratquad_plus_linear": lambda X: get_ratquad_kernel(X, ARD=False)
     + get_linear_kernel(X, ARD=False),

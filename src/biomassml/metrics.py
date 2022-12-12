@@ -1,5 +1,10 @@
-from tabnanny import verbose
-from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, max_error, mean_absolute_percentage_error
+from sklearn.metrics import (
+    mean_squared_error,
+    r2_score,
+    mean_absolute_error,
+    max_error,
+    mean_absolute_percentage_error,
+)
 from sklearn.model_selection import LeaveOneOut
 from sklearn.preprocessing import StandardScaler
 import numpy as np
@@ -25,15 +30,17 @@ def get_regression_metrics(y_true, y_pred) -> dict:
         "r2": r2_score(y_true, y_pred),
         "mae": mean_absolute_error(y_true, y_pred),
         "max_error": max_error(y_true, y_pred),
-        "mape": mean_absolute_percentage_error(y_true, y_pred)
+        "mape": mean_absolute_percentage_error(y_true, y_pred),
     }
 
 
 def picp(y_true, y_mean, y_err):
     """
     Based on UQ360 implementation
+
     Prediction Interval Coverage Probability (PICP). Computes the fraction of samples for which the grounds truth lies
     within predicted interval. Measures the prediction interval calibration for regression.
+    
     Args:
         y_true: Ground truth
         y_mean: predicted mean
@@ -41,8 +48,8 @@ def picp(y_true, y_mean, y_err):
     Returns:
         float: the fraction of samples for which the grounds truth lies within 95% predicted interval
     """
-    y_upper = y_mean.squeeze() + 2.045*y_err.squeeze()
-    y_lower = y_mean.squeeze() - 2.045*y_err.squeeze()
+    y_upper = y_mean.squeeze() + 2.045 * y_err.squeeze()
+    y_lower = y_mean.squeeze() - 2.045 * y_err.squeeze()
     satisfies_upper_bound = y_true.squeeze() <= y_upper
     satisfies_lower_bound = y_true.squeeze() >= y_lower
     return np.mean(satisfies_upper_bound * satisfies_lower_bound)
@@ -51,20 +58,24 @@ def picp(y_true, y_mean, y_err):
 def mpiw(y_err):
     """
     Based on UQ360 implementation
+
     Mean Prediction Interval Width (MPIW). Computes the average width of the prediction intervals. Measures the
     sharpness of intervals.
+
     Args:
         y_err: predicted uncertainty
     Returns:
         float: the average width of the 95% prediction interval across samples
     """
-    return np.mean(np.abs(2.045*2*y_err.squeeze()))
+    return np.mean(np.abs(2.045 * 2 * y_err.squeeze()))
 
 
 def negative_log_likelihood_Gaussian(y_true, y_mean, y_err):
     """
     Based on UQ360 implementation
+
     Computes Gaussian negative_log_likelihood assuming symmetric band around the mean.
+    
     Args:
         y_true: Ground truth
         y_mean: predicted mean
@@ -77,7 +88,9 @@ def negative_log_likelihood_Gaussian(y_true, y_mean, y_err):
     return nll
 
 
-def loocv_train_test(gp_model, X: np.array, y: np.array, coregionalized: bool = False, n_restarts=20):
+def loocv_train_test(
+    gp_model, X: np.array, y: np.array, coregionalized: bool = False, n_restarts=20
+):
     """
     Perform Leave-One-Out Cross-Validation (LOOCV) on the model.
     """

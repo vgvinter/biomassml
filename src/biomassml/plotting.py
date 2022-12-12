@@ -76,4 +76,3 @@ def set_plotstyle():
     plt.style.use("science")
     rcParams["font.family"] = "sans-serif"
     plt.rcParams["font.sans-serif"] = "Helvetica"
-
