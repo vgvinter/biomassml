@@ -33,9 +33,11 @@
     <a href="https://zenodo.org/badge/latestdoi/455565709"><img src="https://zenodo.org/badge/455565709.svg" alt="DOI"></a>
 </p>
 
-Predicting gasification results for biomasses
+Predicting gasification results for biomasses.
 
 ## 💪 Getting Started
+
+biomassml allows you to predict gasification results for biomass samples as a function of the biomass properties and the process operating conditions
 
 > TODO show in a very small amount of space the **MOST** useful thing your package can do.
 Make it as short as possible! You have an entire set of docs for later.
@@ -76,6 +78,36 @@ $ git clone git+https://github.com/vgvinter/biomassml.git
 $ cd biomassml
 $ pip install -e .
 ```
+
+## :page_facing_up: Description
+
+### Datasets
+
+The data for training the models can be found in `data/data_GASIF_biomass.csv`, which contains data on biomass properties, gasification operating conditions, and results of the gasification process.
+
+The data for the new biomasses used in this work to predict gasification results can be found in `data/data_NEW_biomasses.csv`, which contains data on the properties of different biomasses collected from the literature.
+
+### Training
+
+The code to build the Gaussian Processes Regression (GPR) models used in this work can be found in `src/biomassml/build_model.py`. Code to build single-output GPR and coregionalized GPR models is included. The default configuration for training can be found in `src/biomassml/conf/default.yaml`.
+
+Helper functions to perform leave-one-out cross-validation (LOOCV) on the model and to calculate metrics can be found in `src/biomassml/metrics.py`. Functions to perform LOOCV on a given kernel can be found in `src/biomassml/pipeline.py`.
+
+### Feature importance
+
+The command-line-tools for the analysis of the feature importance can be found in `src/biomassml/feature_importance.py`, including partial dependency plots and SHAP analysis.`
+
+### Predictions
+
+The code to predict outputs can be found in `src/biomassml/predict_outputs.py`. Functions to predict the biomass gasification outputs used in this work can be found in `src/biomassml/predict_outputs.py`.
+
+### Trained models
+
+We provide the Gaussian Processes Regression (GPR) models trained in this work in the `models` directory. The model trained using leave-one-out cross-validation (LOOCV) can be found in `models/model_GPR_loocv`. The model retrained on all data can be found in `models/model_GPR_retrained`.
+
+### Example usage
+
+The use of the main functions of this package is shown in Jupyter Notebooks in the `notebooks` directory. The training of the Gaussian Processes Regression (GPR) models used in this work can be found in `notebooks/train_GPR_model.ipynb`. The analysis of the feature importance can be found in `notebooks/feature_importance.ipynb`. The prediction of the gasification results for different biomasses from the literature can be found in `notebooks/predictions_new_dataset.ipynb`. The cluster analysis can be found in `notebooks/cluster_analysis.ipynb`.
 
 ## 👐 Contributing
 
