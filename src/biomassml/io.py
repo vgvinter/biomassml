@@ -19,7 +19,7 @@ def dump_joblib(obj, filename):
 
 
 def load_json(filename):
-    with open( filename, "r") as f:
+    with open(filename, "r") as f:
         return json.load(f)
 
 
