@@ -171,7 +171,7 @@ run reproducibly with:
 $ tox
 ```
 
-Additionally, these tests are automatically re-run with each commit in a [GitHub Action](https://github.com/kjappelbaum/biomassml/actions?query=workflow%3ATests).
+Additionally, these tests are automatically re-run with each commit in a [GitHub Action](https://github.com/vgvinter/biomassml/actions?query=workflow%3ATests).
 
 ### 📦 Making a Release
 
