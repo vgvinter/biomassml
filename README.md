@@ -79,7 +79,7 @@ $ cd biomassml
 $ pip install -e .
 ```
 
-## :memo: :pencil: Description
+## :memo: Description
 
 ### Datasets
 
