@@ -3,6 +3,7 @@ labels:
   - volCO (%)
   - volH2 (%)
   - volCOMB (%)
+  - GAS (m3/kg biom)
 features:
   - SA
   - SBR
