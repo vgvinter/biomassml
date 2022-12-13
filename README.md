@@ -12,25 +12,14 @@
     <a href="https://github.com/vgvinter/biomassml/actions?query=workflow%3ATests">
         <img alt="Tests" src="https://github.com/vgvinter/biomassml/workflows/Tests/badge.svg" />
     </a>
+    <!--
     <a href="https://github.com/cthoyt/cookiecutter-python-package">
         <img alt="Cookiecutter template from @cthoyt" src="https://img.shields.io/badge/Cookiecutter-python--package-yellow" /> 
     </a>
-    <a href="https://pypi.org/project/biomassml">
-        <img alt="PyPI" src="https://img.shields.io/pypi/v/biomassml" />
+    -->
+    <a href="https://zenodo.org/badge/latestdoi/455565709">
+        <img src="https://zenodo.org/badge/455565709.svg" alt="DOI">
     </a>
-    <a href="https://pypi.org/project/biomassml">
-        <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/biomassml" />
-    </a>
-    <a href="https://github.com/vgvinter/biomassml/blob/main/LICENSE">
-        <img alt="PyPI - License" src="https://img.shields.io/pypi/l/biomassml" />
-    </a>
-    <a href='https://biomassml.readthedocs.io/en/latest/?badge=latest'>
-        <img src='https://readthedocs.org/projects/biomassml/badge/?version=latest' alt='Documentation Status' />
-    </a>
-    <a href='https://github.com/psf/black'>
-        <img src='https://img.shields.io/badge/code%20style-black-000000.svg' alt='Code style: black' />
-    </a>
-    <a href="https://zenodo.org/badge/latestdoi/455565709"><img src="https://zenodo.org/badge/455565709.svg" alt="DOI"></a>
 </p>
 
 Predicting gasification results for biomasses.
@@ -41,9 +30,6 @@ biomassml allows you to predict gasification results for biomass samples as a fu
 
 This approach aims to be used for optimizing biomass utilization in the gasification process. It allows you to identify promising gasification pathways for biomasses, and to find optimal process operating conditions.
 
-> TODO show in a very small amount of space the **MOST** useful thing your package can do.
-Make it as short as possible! You have an entire set of docs for later.
-
 ### Command Line Interface
 
 The biomassml command line tool is automatically installed. It can
@@ -52,9 +38,6 @@ be used from the shell with the `--help` flag to show all subcommands:
 ```shell
 $ biomassml --help
 ```
-
-> TODO show the most useful thing the CLI does! The CLI will have documentation auto-generated
-by `sphinx`.
 
 ## 🚀 Installation
 
@@ -136,7 +119,6 @@ This project has been supported by the following organizations (in alphabetical 
 - [Harvard Program in Therapeutic Science - Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/)
 
 -->
-
 
 ### 💰 Funding
 
