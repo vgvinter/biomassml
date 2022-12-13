@@ -63,7 +63,6 @@ class GPYEstimator:
         self.y_scaler = y_scaler
 
     def fit(self, X, y):
-        X = self.x_scaler.transform(X)  # not sure if this is needed also here
         ...
 
     def predict(self, X):
@@ -90,7 +89,6 @@ class GPY_CH4_Estimator:
         self.y_scaler = y_scaler
 
     def fit(self, X, y):
-        X = self.x_scaler.transform(X)  # not sure if this is needed also here
         ...
 
     def predict(self, X):
