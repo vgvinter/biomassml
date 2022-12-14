@@ -8,8 +8,8 @@
       "package_name_stylized": "biomassml",
       "short_description": "Predicting gasification results for biomasses",
       "author_name": "María Victoria Gil, Kevin Maik Jablonka",
-      "author_email": "mail@kjablonka.com",
-      "github_organization_name": "kjappelbaum",
+      "author_email": "victoria.gil@incar.csic.es",
+      "github_organization_name": "vgvinter",
       "github_repository_name": "biomassml",
       "_template": "https://github.com/kjappelbaum/cookiecutter-snekpack"
     }
