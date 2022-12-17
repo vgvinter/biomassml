@@ -1,3 +1,5 @@
+import os
+import pandas as pd
 import numpy as np
 from numpy import sqrt
 from sklearn.preprocessing import StandardScaler
@@ -89,11 +91,14 @@ def predict_CH4(X, model, x_scaler, y_scaler):
     return y_pred_mu_CH4, y_pred_std_CH4
 
 
-def predict_CH4_covar(X, y, model, x_scaler, y_scaler):
+def predict_CH4_covar(X, model, x_scaler, y_scaler, DATA_DIR):
     """It returns unscaled predictions considering covariance in the calculation of the error propagation
     y_scaler: y scaler for TARGETS_GASIF = CO, H2, COMB, GAS
     """
     X_scaled = x_scaler.transform(X)
+    dfGASIF_dataset = pd.read_csv(os.path.join(DATA_DIR, 'data_GASIF_biomass.csv'))
+    y = dfGASIF_dataset.iloc[:,[16,18,19,20]]
+
     y_pred_mu_CO = (
         predict_coregionalized(model, X_scaled, 0)[0] * sqrt(y_scaler.var_[0]) + y_scaler.mean_[0]
     )
